@@ -21,7 +21,6 @@ app.use(
   })
 );
 
-
 // Make user accessible in EJS views
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
@@ -38,7 +37,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
-// Test database connection
+
 pool.query("SELECT NOW()")
   .then(res => console.log("DB Connected ✔️", res.rows[0]))
   .catch(err => console.error("DB Connection Error ❌", err));
@@ -79,13 +78,10 @@ const userRoutes = require("./routes/users");
 // ---------------------------------------------
 // ROOT ROUTE (PUBLIC LANDING vs DASHBOARD)
 // ---------------------------------------------
-app.get("/", async (req, res) => {
-  // Not logged in → Show public landing
+app.get("/", (req, res) => {
   if (!req.session.user) {
     return res.render("publicLanding");
   }
-
-  // Logged in → Show dashboard
   res.render("index");
 });
 
@@ -93,6 +89,9 @@ app.get("/", async (req, res) => {
 // AUTH ROUTES
 // ---------------------------------------------
 app.get("/login", (req, res) => {
+  if (req.session.user) {
+    return res.redirect("/");
+  }
   res.render("login");
 });
 
@@ -111,6 +110,7 @@ app.post("/login", async (req, res) => {
 
     const user = result.rows[0];
 
+    // TODO: Replace this with bcrypt later
     if (user.password !== password) {
       return res.send("Invalid username or password");
     }
@@ -142,7 +142,7 @@ app.use("/events", eventRoutes);
 app.use("/surveys", surveyRoutes);
 app.use("/milestones", milestoneRoutes);
 app.use("/donations", donationRoutes);
-app.use("/", userRoutes); // general-purpose routes
+app.use("/", userRoutes);
 
 // ---------------------------------------------
 // START SERVER

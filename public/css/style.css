@@ -1,0 +1,157 @@
+/* -----------------------------------------------------
+   ELLA RISES GLOBAL BRAND STYLES
+----------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600&display=swap');
+
+/* Brand Colors */
+:root {
+  --blue: #99B7C6;
+  --purple: #97BCE4;
+  --cream: #F9F5EA;
+  --pink-light: #FFD8D1;
+  --pink-mid: #F9AFB1;
+  --sage: #9AB59D;
+  --gray-dark: #3A3F3B;
+  --peach: #F4B092;
+  --pink-dark: #CE325B;
+
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Montserrat', sans-serif;
+  --font-script: 'Dancing Script', cursive;
+}
+
+/* Global Reset */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--gray-dark);
+}
+
+/* -----------------------------------------------------
+   HEADER / NAVBAR
+----------------------------------------------------- */
+.navbar {
+  background-color: var(--pink-light);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid var(--pink-dark);
+}
+
+.navbar .logo {
+  font-family: var(--font-script);
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gray-dark);
+}
+
+/* -----------------------------------------------------
+   BUTTONS
+----------------------------------------------------- */
+.button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.button-primary {
+  background-color: var(--pink-dark);
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: #b22049;
+}
+
+.button-secondary {
+  background-color: var(--sage);
+  color: white;
+}
+
+.button-secondary:hover {
+  background-color: #87a58a;
+}
+
+/* -----------------------------------------------------
+   CARDS
+----------------------------------------------------- */
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  max-width: 750px;
+}
+
+/* -----------------------------------------------------
+   FORMS
+----------------------------------------------------- */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  margin: 10px 0;
+  font-family: var(--font-body);
+}
+
+label {
+  font-weight: 600;
+  margin-top: 15px;
+  display: block;
+}
+
+input[type="submit"] {
+  background-color: var(--pink-mid);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: var(--pink-dark);
+}
+
+/* -----------------------------------------------------
+   LOGIN PAGE STYLES
+----------------------------------------------------- */
+
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.login-logo {
+  width: 180px;
+  margin-bottom: 20px;
+}
+
+.login-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: var(--gray-dark);
+  margin-bottom: 20px;
+}
+
+.login-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
