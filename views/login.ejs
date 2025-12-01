@@ -6,26 +6,25 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
+<body class="login-body">
 
-  <!-- Center container -->
-  <div class="login-container">
+  <div class="login-wrapper">
 
-    <img src="/images/logo.png" class="login-logo" alt="Ella Rises Logo">
+    <img src="/images/logo.png" alt="Ella Rises Logo" class="login-logo">
 
     <h2 class="login-title">Welcome Back</h2>
-    <p class="login-subtitle">Please sign in to continue</p>
+    <p class="login-subtitle">Sign in to continue your Ella Rises work</p>
 
-    <div class="card">
+    <div class="login-card">
       <form action="/login" method="POST">
 
-        <label for="username">Username</label>
-        <input type="text" name="username" required>
+        <label class="login-label">Username</label>
+        <input type="text" name="username" class="login-input" required>
 
-        <label for="password">Password</label>
-        <input type="password" name="password" required>
+        <label class="login-label">Password</label>
+        <input type="password" name="password" class="login-input" required>
 
-        <button type="submit" class="button button-primary login-button">Login</button>
+        <button type="submit" class="login-button">Login</button>
       </form>
     </div>
 
