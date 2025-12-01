@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const { Pool } = require("pg");
 const path = require("path");
@@ -13,11 +15,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "my-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
 );
+
 
 // Make user accessible in EJS views
 app.use((req, res, next) => {
@@ -29,12 +32,16 @@ app.use((req, res, next) => {
 // Database connection
 // ---------------------------------------------
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "EllaRises", 
-  password: "admin",
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
+// Test database connection
+pool.query("SELECT NOW()")
+  .then(res => console.log("DB Connected ✔️", res.rows[0]))
+  .catch(err => console.error("DB Connection Error ❌", err));
 
 // ---------------------------------------------
 // Static files + View engine
