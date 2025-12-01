@@ -1,0 +1,16 @@
+<nav>
+  <a href="/">Dashboard</a>
+  <a href="/participants">Participants</a>
+  <a href="/events">Events</a>
+  <a href="/surveys">Surveys</a>
+  <a href="/milestones">Milestones</a>
+  <a href="/donations">Donations</a>
+
+  <% if (!currentUser) { %>
+    <a href="/login">Login</a>
+  <% } else { %>
+    <form action="/logout" method="POST" style="display:inline;">
+      <button>Logout</button>
+    </form>
+  <% } %>
+</nav>
