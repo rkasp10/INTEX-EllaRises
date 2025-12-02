@@ -4,24 +4,32 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600&display=swap');
 
-/* Brand Colors */
+/* -----------------------------------------------------
+   BRAND VARIABLES
+----------------------------------------------------- */
 :root {
+  /* Colors */
   --blue: #99B7C6;
-  --purple: #97BCE4;
+  --purple: #97BEC4;
   --cream: #F9F5EA;
   --pink-light: #FFD8D1;
   --pink-mid: #F9AFB1;
   --sage: #9AB59D;
+  --green-soft: #9AB59D;
+  --green-dark: #3A3F3B;
   --gray-dark: #3A3F3B;
   --peach: #F4B092;
-  --pink-dark: #CE325B;
+  --rose: #CE325B;
 
-  --font-display: 'DM Serif Display', serif;
-  --font-body: 'Montserrat', sans-serif;
-  --font-script: 'Dancing Script', cursive;
+  /* Fonts */
+  --font-display: "DM Serif Display", serif;
+  --font-body: "Montserrat", sans-serif;
+  --font-script: "Dancing Script", cursive;
 }
 
-/* Global Reset */
+/* -----------------------------------------------------
+   GLOBAL RESET
+----------------------------------------------------- */
 body {
   margin: 0;
   padding: 0;
@@ -31,7 +39,7 @@ body {
 }
 
 /* -----------------------------------------------------
-   HEADER / NAVBAR
+   NAVBAR
 ----------------------------------------------------- */
 .navbar {
   background-color: var(--pink-light);
@@ -39,14 +47,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 4px solid var(--pink-dark);
+  border-bottom: 4px solid var(--rose);
 }
 
 .navbar .logo {
   font-family: var(--font-script);
   font-size: 2rem;
   font-weight: bold;
-  color: var(--gray-dark);
 }
 
 /* -----------------------------------------------------
@@ -63,7 +70,7 @@ body {
 }
 
 .button-primary {
-  background-color: var(--pink-dark);
+  background-color: var(--rose);
   color: white;
 }
 
@@ -81,19 +88,7 @@ body {
 }
 
 /* -----------------------------------------------------
-   CARDS
------------------------------------------------------ */
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  margin: 20px auto;
-  max-width: 750px;
-}
-
-/* -----------------------------------------------------
-   FORMS
+   GLOBAL FORM ELEMENTS
 ----------------------------------------------------- */
 input, select, textarea {
   width: 100%;
@@ -114,85 +109,80 @@ input[type="submit"] {
   background-color: var(--pink-mid);
   color: white;
   border: none;
-  cursor: pointer;
 }
 
 input[type="submit"]:hover {
-  background-color: var(--pink-dark);
+  background-color: var(--rose);
 }
 
 /* -----------------------------------------------------
-   LOGIN PAGE
+   LOGIN PAGE (FINAL)
 ----------------------------------------------------- */
 
 .login-body {
   background-color: var(--cream);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  font-family: var(--font-body);
-}
-
-.login-wrapper {
-  text-align: center;
-  max-width: 420px;
-  width: 90%;
-}
-
-.login-logo {
-  width: 200px;
-  margin-bottom: 15px;
-}
-
-.login-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  color: var(--green-dark);
-  margin-bottom: 5px;
-}
-
-.login-subtitle {
-  color: #6c6c6c;
-  margin-bottom: 25px;
 }
 
 .login-card {
   background-color: var(--pink-light);
   padding: 30px;
   border-radius: 20px;
-  border: 2px solid var(--pink-bright);
+  border: 2px solid var(--peach);
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  width: 450px;
+
+  /* CENTER EVERYTHING INSIDE */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.login-logo {
+  width: 180px;
+  margin-bottom: 10px;
+}
+
+.login-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--green-dark);
+  margin-bottom: 20px;
 }
 
 .login-label {
+  text-align: center;
   display: block;
-  text-align: left;
-  margin: 10px 0 5px;
+  margin: 8px 0 4px;
   font-weight: 600;
 }
 
 .login-input {
   width: 100%;
-  padding: 12px;
+  max-width: 232px;
+  padding: 14px;
+  flex: 1;
   border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  margin-left: 0;
+  margin-bottom: 14px;
 }
 
 .login-button {
   width: 100%;
-  padding: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
+  max-width: 350px;
+  padding: 14px;
   border-radius: 30px;
+  border: none;
   background-color: var(--green-soft);
   color: white;
-  border: none;
-  cursor: pointer;
+  font-weight: 600;
   transition: 0.2s ease;
+  margin-top: 5px;
 }
 
 .login-button:hover {
@@ -201,31 +191,11 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-   COLOR VARIABLES BASED ON BRAND GUIDE
------------------------------------------------------ */
-:root {
-  --pink-light: #FDD8D1;
-  --pink-bright: #F9AFB1;
-  --green-soft: #9AB59D;
-  --green-dark: #3A3F3B;
-  --cream: #F9F5EA;
-  --purple: #978EC4;
-  --mint: #99B7C6;
-  --peach: #F4B092;
-  --rose: #CE325B;
-
-  --font-display: "DM Serif Display", serif;
-  --font-body: "Montserrat", sans-serif;
-}
-
-/* -----------------------------------------------------
    LANDING PAGE
 ----------------------------------------------------- */
 
 .landing-body {
   background-color: var(--cream);
-  margin: 0;
-  font-family: var(--font-body);
 }
 
 .landing-hero {
@@ -235,8 +205,8 @@ input[type="submit"]:hover {
   text-align: center;
   background-color: var(--pink-light);
   border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  border: 3px solid var(--pink-bright);
+  border: 3px solid var(--pink-mid);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 .landing-logo {
@@ -253,19 +223,16 @@ input[type="submit"]:hover {
 
 .landing-tagline {
   font-size: 1.2rem;
-  line-height: 1.5;
   color: #555;
   margin-bottom: 30px;
 }
 
 .landing-login-btn {
-  display: inline-block;
   padding: 14px 34px;
-  font-size: 1.1rem;
-  font-weight: 600;
   background-color: var(--green-soft);
   color: white;
   border-radius: 30px;
+  font-weight: 600;
   text-decoration: none;
   transition: 0.2s ease;
 }

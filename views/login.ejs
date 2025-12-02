@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Ella Rises — Login</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+  <%- include("partials/header") %>
 
 <body class="login-body">
 
-  <div class="login-wrapper">
+  <div class="login-card">
 
-    <img src="/images/logo.png" alt="Ella Rises Logo" class="login-logo">
+    <img class="login-logo" src="/css/images/logo.png" alt="Ella Rises">
 
-    <h2 class="login-title">Welcome Back</h2>
-    <p class="login-subtitle">Sign in to continue your Ella Rises work</p>
+    <h2 class="login-title">Login</h2>
 
-    <div class="login-card">
-      <form action="/login" method="POST">
+    <form action="/login" method="POST">
 
-        <label class="login-label">Username</label>
-        <input type="text" name="username" class="login-input" required>
+      <label class="login-label" for="username">Username</label>
+      <input class="login-input" id="username" name="username" type="text" required>
 
-        <label class="login-label">Password</label>
-        <input type="password" name="password" class="login-input" required>
+      <label class="login-label" for="password">Password</label>
+      <input class="login-input" id="password" name="password" type="password" required>
 
-        <button type="submit" class="login-button">Login</button>
-      </form>
-    </div>
+      <button type="submit" class="login-button">Login</button>
 
+    </form>
   </div>
 
 </body>
