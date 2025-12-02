@@ -97,6 +97,7 @@ input, select, textarea {
   border-radius: 6px;
   margin: 10px 0;
   font-family: var(--font-body);
+  box-sizing: border-box;
 }
 
 label {
