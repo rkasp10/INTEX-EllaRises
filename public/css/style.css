@@ -164,7 +164,7 @@ input[type="submit"]:hover {
 
 .login-input {
   width: 100%;
-  max-width: 232px;
+  max-width: 350px;
   padding: 14px;
   flex: 1;
   border-radius: 10px;
@@ -192,22 +192,86 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-   LANDING PAGE
+   LANDING PAGE (CLEAN + UPDATED)
 ----------------------------------------------------- */
 
 .landing-body {
   background-color: var(--cream);
+  margin: 0;
+  font-family: var(--font-body);
 }
+
+.landing-container {
+  max-width: 1100px;     /* controls overall page width */
+  margin: 0 auto;         /* centers the page */
+  padding: 0 20px;        /* keeps spacing clean on mobile */
+}
+
+/* FULL-WIDTH NAVBAR */
+.landing-nav {
+  width: 100%;
+  height: 80px;
+
+  background-color: var(--cream);
+  border-bottom: 3px solid var(--pink-light);
+
+  display: flex;
+  justify-content: space-between;   /* left & right edges */
+  align-items: center;
+
+  padding: 0 40px;                  /* controls inner spacing */
+  box-sizing: border-box;           /* ensures padding doesn't shrink width */
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Logo */
+.nav-logo-small {
+  height: 55px;
+  width: auto;
+}
+
+/* Login button in navbar */
+.landing-nav-login {
+  background-color: var(--green-soft);
+  padding: 10px 22px;
+  border-radius: 20px;
+  color: white;
+  font-size: 1rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.landing-nav-login:hover {
+  background-color: var(--green-dark);
+}
+
+
+/* ---------------- PHOTO BANNER ---------------- */
+
+.landing-photo-banner img {
+  width: 70vw;        /* image takes up 70% of the screen width */
+  max-width: 950px;   /* but never gets TOO big */
+  height: auto;
+  border-radius: 18px;
+  display: block;
+  margin: 0 auto;
+}
+
+
+/* ---------------- HERO SECTION ---------------- */
 
 .landing-hero {
   max-width: 700px;
-  margin: 80px auto;
+  margin: 60px auto;
   padding: 40px;
   text-align: center;
   background-color: var(--pink-light);
   border-radius: 20px;
   border: 3px solid var(--pink-mid);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .landing-logo {
@@ -224,16 +288,18 @@ input[type="submit"]:hover {
 
 .landing-tagline {
   font-size: 1.2rem;
+  line-height: 1.5;
   color: #555;
   margin-bottom: 30px;
 }
 
 .landing-login-btn {
+  display: inline-block;
   padding: 14px 34px;
   background-color: var(--green-soft);
   color: white;
-  border-radius: 30px;
   font-weight: 600;
+  border-radius: 30px;
   text-decoration: none;
   transition: 0.2s ease;
 }
