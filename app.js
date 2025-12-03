@@ -1,7 +1,6 @@
 require("dotenv").config();
-
 const express = require("express");
-const { Pool } = require("pg");
+const knex = require("knex");
 const path = require("path");
 const session = require("express-session");
 
@@ -30,17 +29,15 @@ app.use((req, res, next) => {
 // ---------------------------------------------
 // Database connection
 // ---------------------------------------------
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+const db = knex({
+  client: "pg",
+  connection: {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
 });
-
-pool.query("SELECT NOW()")
-  .then(res => console.log("DB Connected ✔️", res.rows[0]))
-  .catch(err => console.error("DB Connection Error ❌", err));
 
 // ---------------------------------------------
 // Static files + View engine

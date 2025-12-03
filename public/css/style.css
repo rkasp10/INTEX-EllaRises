@@ -1,11 +1,11 @@
 /* -----------------------------------------------------
-   ELLA RISES GLOBAL BRAND STYLES
+    ELLA RISES GLOBAL BRAND STYLES
 ----------------------------------------------------- */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600&display=swap');
 
 /* -----------------------------------------------------
-   BRAND VARIABLES
+    BRAND VARIABLES
 ----------------------------------------------------- */
 :root {
   /* Colors */
@@ -28,7 +28,7 @@
 }
 
 /* -----------------------------------------------------
-   GLOBAL RESET
+    GLOBAL RESET
 ----------------------------------------------------- */
 body {
   margin: 0;
@@ -39,7 +39,7 @@ body {
 }
 
 /* -----------------------------------------------------
-   NAVBAR
+    NAVBAR
 ----------------------------------------------------- */
 .navbar {
   background-color: var(--pink-light);
@@ -57,7 +57,7 @@ body {
 }
 
 /* -----------------------------------------------------
-   BUTTONS
+    BUTTONS
 ----------------------------------------------------- */
 .button {
   padding: 10px 20px;
@@ -88,7 +88,7 @@ body {
 }
 
 /* -----------------------------------------------------
-   GLOBAL FORM ELEMENTS
+    GLOBAL FORM ELEMENTS
 ----------------------------------------------------- */
 input, select, textarea {
   width: 100%;
@@ -117,7 +117,7 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-   LOGIN PAGE (FINAL)
+    LOGIN PAGE (FINAL)
 ----------------------------------------------------- */
 
 .login-body {
