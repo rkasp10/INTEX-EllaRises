@@ -1,16 +1,29 @@
-<nav>
-  <a href="/">Dashboard</a>
-  <a href="/participants">Participants</a>
-  <a href="/events">Events</a>
-  <a href="/surveys">Surveys</a>
-  <a href="/milestones">Milestones</a>
-  <a href="/donations">Donations</a>
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="/" class="nav-logo-link">
+      <img src="/css/images/logo.png" alt="Ella Rises" class="nav-logo-small">
+    </a>
+  </div>
 
-  <% if (!currentUser) { %>
-    <a href="/login">Login</a>
-  <% } else { %>
-    <form action="/logout" method="POST" style="display:inline;">
-      <button>Logout</button>
-    </form>
-  <% } %>
+  <div class="nav-links">
+    <a href="/participants" class="nav-link">Participants</a>
+    <a href="/events" class="nav-link">Events</a>
+    <a href="/surveys" class="nav-link">Surveys</a>
+    <a href="/milestones" class="nav-link">Milestones</a>
+    <a href="/donations" class="nav-link">Donations</a>
+    <% if (currentUser && currentUser.level === 'M') { %>
+      <a href="/users" class="nav-link">Users</a>
+    <% } %>
+  </div>
+
+  <div class="nav-right">
+    <% if (!currentUser) { %>
+      <a href="/login" class="nav-login-btn">Login</a>
+    <% } else { %>
+      <span class="nav-user">Welcome, <%= currentUser.username %></span>
+      <form action="/logout" method="POST" style="display:inline;">
+        <button type="submit" class="nav-logout-btn">Logout</button>
+      </form>
+    <% } %>
+  </div>
 </nav>

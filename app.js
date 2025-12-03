@@ -132,6 +132,21 @@ app.post("/logout", (req, res) => {
 });
 
 // ---------------------------------------------
+// DEV BYPASS (remove in production!)
+// ---------------------------------------------
+// Quick login as a regular user
+app.get("/dev/user", (req, res) => {
+  req.session.user = { id: 1, username: "testuser", level: "U" };
+  res.redirect("/");
+});
+
+// Quick login as a manager
+app.get("/dev/manager", (req, res) => {
+  req.session.user = { id: 1, username: "testmanager", level: "M" };
+  res.redirect("/");
+});
+
+// ---------------------------------------------
 // FEATURE ROUTES
 // ---------------------------------------------
 app.use("/participants", participantRoutes);

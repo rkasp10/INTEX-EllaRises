@@ -2,15 +2,15 @@
     ELLA RISES GLOBAL BRAND STYLES
 ----------------------------------------------------- */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@300;400;500;600&family=Pacifico&display=swap');
 
 /* -----------------------------------------------------
-    BRAND VARIABLES
+    BRAND VARIABLES (from Ella Rises Brand Guide)
 ----------------------------------------------------- */
 :root {
-  /* Colors */
+  /* Colors - exact from brand guide */
   --blue: #99B7C6;
-  --purple: #97BEC4;
+  --purple: #978EC4;
   --cream: #F9F5EA;
   --pink-light: #FFD8D1;
   --pink-mid: #F9AFB1;
@@ -21,10 +21,10 @@
   --peach: #F4B092;
   --rose: #CE325B;
 
-  /* Fonts */
+  /* Fonts - from brand guide */
   --font-display: "DM Serif Display", serif;
   --font-body: "Montserrat", sans-serif;
-  --font-script: "Dancing Script", cursive;
+  --font-script: "Pacifico", cursive;  /* Similar to TT Milk Script */
 }
 
 /* -----------------------------------------------------
@@ -39,21 +39,94 @@ body {
 }
 
 /* -----------------------------------------------------
-    NAVBAR
+    NAVBAR (Authenticated)
 ----------------------------------------------------- */
 .navbar {
   background-color: var(--pink-light);
-  padding: 15px 40px;
+  padding: 0 40px;
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 4px solid var(--rose);
+  border-bottom: 2px solid var(--pink-mid);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.navbar .logo {
-  font-family: var(--font-script);
-  font-size: 2rem;
-  font-weight: bold;
+.navbar .nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-logo-small {
+  height: 50px;
+  width: auto;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.navbar .nav-link {
+  color: var(--gray-dark);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar .nav-link:hover {
+  background-color: var(--pink-mid);
+  color: white;
+}
+
+.navbar .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar .nav-user {
+  font-size: 0.9rem;
+  color: var(--gray-dark);
+}
+
+.navbar .nav-login-btn {
+  background-color: var(--green-soft);
+  padding: 8px 20px;
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.navbar .nav-login-btn:hover {
+  background-color: var(--green-dark);
+}
+
+.navbar .nav-logout-btn {
+  background-color: var(--rose);
+  padding: 8px 18px;
+  border-radius: 20px;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background-color 0.2s;
+}
+
+.navbar .nav-logout-btn:hover {
+  background-color: #a01c40;
 }
 
 /* -----------------------------------------------------
@@ -117,26 +190,41 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-    LOGIN PAGE (FINAL)
+    LOGIN PAGE
 ----------------------------------------------------- */
 
 .login-body {
-  background-color: var(--cream);
+  background-color: var(--pink-light);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-back {
+  display: inline-block;
+  color: var(--green-dark);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.login-back:hover {
+  color: var(--sage);
 }
 
 .login-card {
-  background-color: var(--pink-light);
-  padding: 30px;
-  border-radius: 20px;
-  border: 2px solid var(--peach);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  width: 450px;
-
-  /* CENTER EVERYTHING INSIDE */
+  background-color: var(--cream);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -144,46 +232,66 @@ input[type="submit"]:hover {
 }
 
 .login-logo {
-  width: 180px;
-  margin-bottom: 10px;
+  width: 120px;
+  margin-bottom: 20px;
 }
 
 .login-title {
   font-family: var(--font-display);
   font-size: 2rem;
   color: var(--green-dark);
-  margin-bottom: 20px;
+  margin: 0 0 8px 0;
+}
+
+.login-subtitle {
+  color: #666;
+  margin: 0 0 25px 0;
+  font-size: 0.95rem;
+}
+
+.login-card form {
+  width: 100%;
 }
 
 .login-label {
-  text-align: center;
+  text-align: left;
   display: block;
-  margin: 8px 0 4px;
+  margin: 0 0 6px 0;
   font-weight: 600;
+  color: var(--gray-dark);
+  font-size: 0.9rem;
 }
 
 .login-input {
   width: 100%;
-  max-width: 350px;
-  padding: 14px;
-  flex: 1;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  margin-left: 0;
-  margin-bottom: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+  margin-bottom: 18px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--sage);
 }
 
 .login-button {
   width: 100%;
-  max-width: 350px;
   padding: 14px;
   border-radius: 30px;
   border: none;
-  background-color: var(--green-soft);
+  background-color: var(--sage);
   color: white;
   font-weight: 600;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  cursor: pointer;
   transition: 0.2s ease;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 
 .login-button:hover {
@@ -201,102 +309,134 @@ input[type="submit"]:hover {
   font-family: var(--font-body);
 }
 
-.landing-container {
-  max-width: 1100px;     /* controls overall page width */
-  margin: 0 auto;         /* centers the page */
-  padding: 0 20px;        /* keeps spacing clean on mobile */
+/* Hero section - pink background with content */
+.landing-hero {
+  background-color: var(--pink-light);
+  display: flex;
+  flex-direction: column;
 }
 
-/* FULL-WIDTH NAVBAR */
+/* FULL-WIDTH NAVBAR - cream like official site */
 .landing-nav {
   width: 100%;
   height: 80px;
 
   background-color: var(--cream);
-  border-bottom: 3px solid var(--pink-light);
+  border-bottom: none;
 
   display: flex;
-  justify-content: space-between;   /* left & right edges */
+  justify-content: space-between;
   align-items: center;
 
-  padding: 0 40px;                  /* controls inner spacing */
-  box-sizing: border-box;           /* ensures padding doesn't shrink width */
+  padding: 0 60px;
+  box-sizing: border-box;
 
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
 }
 
 /* Logo */
 .nav-logo-small {
-  height: 55px;
+  height: 65px;
   width: auto;
 }
 
-/* Login button in navbar */
-.landing-nav-login {
-  background-color: var(--green-soft);
-  padding: 10px 22px;
-  border-radius: 20px;
-  color: white;
-  font-size: 1rem;
-  text-decoration: none;
-  font-weight: 600;
+/* Navbar right section */
+.landing-nav .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.landing-nav-login:hover {
+/* Donate button in navbar - sage green like official site */
+.landing-nav-donate {
+  background-color: var(--sage);
+  padding: 10px 24px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.95rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.landing-nav-donate:hover {
   background-color: var(--green-dark);
 }
 
-
-/* ---------------- PHOTO BANNER ---------------- */
-
-.landing-photo-banner img {
-  width: 70vw;        /* image takes up 70% of the screen width */
-  max-width: 950px;   /* but never gets TOO big */
-  height: auto;
-  border-radius: 18px;
-  display: block;
-  margin: 0 auto;
-}
-
-
-/* ---------------- HERO SECTION ---------------- */
-
-.landing-hero {
-  max-width: 700px;
-  margin: 60px auto;
-  padding: 40px;
-  text-align: center;
-  background-color: var(--pink-light);
+/* Home link in navbar */
+.landing-nav-home {
+  color: var(--gray-dark);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 18px;
   border-radius: 20px;
-  border: 3px solid var(--pink-mid);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.2s;
 }
 
-.landing-logo {
-  width: 240px;
-  margin-bottom: 20px;
+.landing-nav-home:hover {
+  background-color: var(--pink-light);
+}
+
+/* Login link in navbar - subtle text like official site */
+.landing-nav-login {
+  color: var(--gray-dark);
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.landing-nav-login:hover {
+  color: var(--green-dark);
+  border-bottom: 2px solid var(--green-dark);
+}
+
+
+/* ---------------- HERO CONTENT ---------------- */
+
+.landing-hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 60px 50px;
+}
+
+.landing-hero-text {
+  text-align: left;
 }
 
 .landing-heading {
   font-family: var(--font-display);
-  font-size: 2.7rem;
+  font-size: 3rem;
   color: var(--green-dark);
-  margin-bottom: 10px;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
 }
 
 .landing-tagline {
-  font-size: 1.2rem;
-  line-height: 1.5;
+  font-size: 1.15rem;
+  line-height: 1.8;
   color: #555;
   margin-bottom: 30px;
 }
 
-.landing-login-btn {
+.landing-hero-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.landing-btn-primary {
   display: inline-block;
-  padding: 14px 34px;
-  background-color: var(--green-soft);
+  padding: 14px 32px;
+  background-color: var(--sage);
   color: white;
   font-weight: 600;
   border-radius: 30px;
@@ -304,7 +444,304 @@ input[type="submit"]:hover {
   transition: 0.2s ease;
 }
 
-.landing-login-btn:hover {
+.landing-btn-primary:hover {
   background-color: var(--green-dark);
   transform: translateY(-2px);
+}
+
+.landing-btn-secondary {
+  display: inline-block;
+  padding: 14px 32px;
+  background-color: transparent;
+  color: var(--green-dark);
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  border: 2px solid var(--green-dark);
+  transition: 0.2s ease;
+}
+
+.landing-btn-secondary:hover {
+  background-color: var(--green-dark);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.landing-hero-image img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive - stack on mobile */
+@media (max-width: 900px) {
+  .landing-hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 30px 20px 50px;
+  }
+  
+  .landing-hero-text {
+    text-align: center;
+  }
+  
+  .landing-hero-buttons {
+    justify-content: center;
+  }
+  
+  .landing-hero-image img {
+    max-width: 100%;
+  }
+}
+
+
+/* Mission Section */
+.landing-mission {
+  background-color: var(--cream);
+  padding: 50px 20px 35px;
+}
+
+.landing-mission-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.landing-mission h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--green-dark);
+  margin: 0 0 18px 0;
+}
+
+.landing-mission p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #555;
+  margin: 0;
+}
+
+/* Landing Footer - subtle, light */
+.landing-footer {
+  background-color: var(--sage);
+  color: white;
+  text-align: center;
+  padding: 25px 20px;
+}
+
+.landing-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* -----------------------------------------------------
+    DONATION PAGE (PUBLIC)
+----------------------------------------------------- */
+.donate-body {
+  background-color: var(--pink-light);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.donate-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+.donate-back {
+  display: inline-block;
+  color: var(--green-dark);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.donate-back:hover {
+  color: var(--sage);
+}
+
+.donate-card {
+  background-color: var(--cream);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.donate-logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.donate-heading {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--green-dark);
+  margin: 0 0 10px 0;
+}
+
+.donate-tagline {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.donate-form {
+  text-align: left;
+}
+
+.donate-form label {
+  display: block;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  color: var(--gray-dark);
+  font-size: 0.9rem;
+}
+
+.donate-form input,
+.donate-form textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  transition: border-color 0.2s;
+}
+
+.donate-form input:focus,
+.donate-form textarea:focus {
+  outline: none;
+  border-color: var(--sage);
+}
+
+.donate-submit-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  background-color: var(--sage);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.donate-submit-btn:hover {
+  background-color: var(--green-dark);
+  transform: translateY(-2px);
+}
+
+.donate-note {
+  margin-top: 25px;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* -----------------------------------------------------
+    DASHBOARD (Logged-in Home)
+----------------------------------------------------- */
+.dashboard-body {
+  background-color: var(--cream);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-welcome {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-welcome h1 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--green-dark);
+  margin: 0 0 12px 0;
+}
+
+.dashboard-role {
+  font-size: 1.05rem;
+  color: #666;
+  margin: 0;
+}
+
+.dashboard-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.dashboard-info-card {
+  background-color: white;
+  padding: 28px 30px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-info-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--green-dark);
+  margin: 0 0 15px 0;
+}
+
+.dashboard-info-card ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #555;
+  line-height: 1.8;
+}
+
+.dashboard-info-card p {
+  margin: 0;
+  color: #555;
+  line-height: 1.7;
+}
+
+.dashboard-highlight {
+  background-color: var(--pink-light);
+}
+
+@media (max-width: 700px) {
+  .dashboard-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -----------------------------------------------------
+    FOOTER
+----------------------------------------------------- */
+footer {
+  background-color: var(--green-dark);
+  color: var(--cream);
+  text-align: center;
+  padding: 25px 20px;
+  margin-top: 60px;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
 }
