@@ -10,6 +10,7 @@ const db = knex({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
   },
 });
 
@@ -36,7 +37,7 @@ router.get("/", async (req, res) => {
       // USER VIEW: Show only their own profile
       // For now, show first participant as demo (needs user-participant linking)
       const participant = await db("participants")
-        .where({ participantemail: req.session.user.username + "@example.com" })
+        .where({ participant_id: req.session.user.participant_id })
         .first();
       
       res.render("participants/profile", {
@@ -69,17 +70,17 @@ router.post("/add", async (req, res) => {
   }
   
   try {
-    const { participantfirstname, participantlastname, participantemail, participantdob, participantphone, participantcity, participantstate, participantzip } = req.body;
+    const { participant_first_name, participant_last_name, participant_email, participant_dob, participant_phone, participant_city, participant_state, participant_zip } = req.body;
     
     await db("participants").insert({
-      participantfirstname,
-      participantlastname,
-      participantemail,
-      participantdob,
-      participantphone,
-      participantcity,
-      participantstate,
-      participantzip
+      participant_first_name,
+      participant_last_name,
+      participant_email,
+      participant_dob,
+      participant_phone,
+      participant_city,
+      participant_state,
+      participant_zip
     });
     
     res.redirect("/participants");
@@ -99,7 +100,7 @@ router.get("/edit/:id", async (req, res) => {
   
   try {
     const participant = await db("participants")
-      .where({ participantid: req.params.id })
+      .where({ participant_id: req.params.id })
       .first();
     
     if (!participant) {
@@ -122,19 +123,19 @@ router.post("/edit/:id", async (req, res) => {
   }
   
   try {
-    const { participantfirstname, participantlastname, participantemail, participantdob, participantphone, participantcity, participantstate, participantzip } = req.body;
+    const { participant_first_name, participant_last_name, participant_email, participant_dob, participant_phone, participant_city, participant_state, participant_zip } = req.body;
     
     await db("participants")
-      .where({ participantid: req.params.id })
+      .where({ participant_id: req.params.id })
       .update({
-        participantfirstname,
-        participantlastname,
-        participantemail,
-        participantdob,
-        participantphone,
-        participantcity,
-        participantstate,
-        participantzip
+        participant_first_name,
+        participant_last_name,
+        participant_email,
+        participant_dob,
+        participant_phone,
+        participant_city,
+        participant_state,
+        participant_zip
       });
     
     res.redirect("/participants");
@@ -153,7 +154,7 @@ router.post("/delete/:id", async (req, res) => {
   }
   
   try {
-    await db("participants").where({ participantid: req.params.id }).del();
+    await db("participants").where({ participant_id: req.params.id }).del();
     res.redirect("/participants");
   } catch (err) {
     console.error(err);

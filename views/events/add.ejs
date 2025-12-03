@@ -15,34 +15,41 @@
         <div class="form-card">
             <form action="/events/add" method="POST" class="crud-form">
                 <div class="form-group">
-                    <label for="name">Event Name</label>
-                    <input type="text" id="name" name="name" required>
+                    <label for="template_id">Event Template</label>
+                    <select id="template_id" name="template_id" required>
+                        <option value="">-- Select Template --</option>
+                        <% if (templates && templates.length > 0) { %>
+                            <% templates.forEach(t => { %>
+                                <option value="<%= t.template_id %>"><%= t.event_name %> (<%= t.event_type %>)</option>
+                            <% }) %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event_datetime_start">Start Date & Time</label>
+                        <input type="datetime-local" id="event_datetime_start" name="event_datetime_start" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event_datetime_end">End Date & Time</label>
+                        <input type="datetime-local" id="event_datetime_end" name="event_datetime_end" required>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3" required></textarea>
+                    <label for="event_location">Location</label>
+                    <input type="text" id="event_location" name="event_location" required>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="event_date">Date</label>
-                        <input type="date" id="event_date" name="event_date" required>
+                        <label for="event_capacity">Capacity</label>
+                        <input type="number" id="event_capacity" name="event_capacity" min="1" required>
                     </div>
                     <div class="form-group">
-                        <label for="time">Time</label>
-                        <input type="time" id="time" name="time" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" id="location" name="location" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="capacity">Capacity</label>
-                        <input type="number" id="capacity" name="capacity" min="1" required>
+                        <label for="event_registration_deadline">Registration Deadline</label>
+                        <input type="datetime-local" id="event_registration_deadline" name="event_registration_deadline">
                     </div>
                 </div>
 
@@ -57,4 +64,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

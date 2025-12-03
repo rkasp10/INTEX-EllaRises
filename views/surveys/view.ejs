@@ -15,29 +15,33 @@
         <div class="form-card">
             <div class="survey-view">
                 <div class="survey-view-header">
-                    <h2><%= survey.event_name %></h2>
-                    <p>Submitted by <%= survey.participant_name %> on <%= survey.submitted_date %></p>
+                    <h2><%= survey.event_name || 'Event Survey' %></h2>
+                    <p>Submitted by <%= survey.participant_first_name %> <%= survey.participant_last_name %> on <%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString() : 'N/A' %></p>
                 </div>
 
                 <div class="survey-scores">
                     <div class="score-item">
                         <span class="score-label">Satisfaction</span>
-                        <span class="score-value"><%= survey.satisfaction %>/5</span>
+                        <span class="score-value"><%= survey.survey_satisfaction_score %>/5</span>
                     </div>
                     <div class="score-item">
                         <span class="score-label">Usefulness</span>
-                        <span class="score-value"><%= survey.usefulness %>/5</span>
+                        <span class="score-value"><%= survey.survey_usefulness_score %>/5</span>
                     </div>
                     <div class="score-item">
-                        <span class="score-label">Recommend Score</span>
-                        <span class="score-value highlight"><%= survey.recommend %>/10</span>
+                        <span class="score-label">Instructor</span>
+                        <span class="score-value"><%= survey.survey_instructor_score %>/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Overall Score</span>
+                        <span class="score-value highlight"><%= survey.survey_overall_score %>/5</span>
                     </div>
                 </div>
 
-                <% if (survey.comments) { %>
+                <% if (survey.survey_comments) { %>
                     <div class="survey-comments">
                         <h4>Comments</h4>
-                        <p>"<%= survey.comments %>"</p>
+                        <p>"<%= survey.survey_comments %>"</p>
                     </div>
                 <% } %>
 
@@ -51,4 +55,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

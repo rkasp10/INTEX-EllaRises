@@ -13,8 +13,11 @@
                 <h1>Donation Records</h1>
                 <p class="page-subtitle">View all donations received</p>
             </div>
-            <div class="stats-badge">
-                Total: $<%= totalDonations.toLocaleString('en-US', {minimumFractionDigits: 2}) %>
+            <div class="header-actions">
+                <div class="stats-badge">
+                    Total: $<%= totalDonations.toLocaleString('en-US', {minimumFractionDigits: 2}) %>
+                </div>
+                <a href="/donations/add" class="btn-add">+ Add Donation</a>
             </div>
         </div>
 
@@ -31,20 +34,19 @@
                             <th>Donor</th>
                             <th>Email</th>
                             <th>Amount</th>
-                            <th>Message</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% donations.forEach(donation => { %>
                             <tr>
-                                <td><%= donation.date %></td>
-                                <td><%= donation.donor_name %></td>
-                                <td><%= donation.email %></td>
-                                <td class="amount">$<%= donation.amount.toFixed(2) %></td>
-                                <td class="message-cell"><%= donation.message || '-' %></td>
+                                <td><%= donation.donation_date ? new Date(donation.donation_date).toLocaleDateString() : '-' %></td>
+                                <td><%= donation.participant_first_name && donation.participant_last_name ? donation.participant_first_name + ' ' + donation.participant_last_name : 'Anonymous' %></td>
+                                <td><%= donation.participant_email || '-' %></td>
+                                <td class="amount">$<%= parseFloat(donation.donation_amount).toFixed(2) %></td>
                                 <td class="actions">
-                                    <form action="/donations/delete/<%= donation.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this record?');">
+                                    <a href="/donations/edit/<%= donation.donation_id %>" class="btn-edit">Edit</a>
+                                    <form action="/donations/delete/<%= donation.donation_id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this record?');">
                                         <button type="submit" class="btn-delete">Delete</button>
                                     </form>
                                 </td>
@@ -59,4 +61,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

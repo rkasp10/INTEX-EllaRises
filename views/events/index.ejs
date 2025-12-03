@@ -27,32 +27,25 @@
                 <% events.forEach(event => { %>
                     <div class="event-card">
                         <div class="event-date-badge">
-                            <%= new Date(event.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                            <%= new Date(event.event_datetime_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
                         </div>
-                        <h3><%= event.name %></h3>
-                        <p class="event-description"><%= event.description %></p>
+                        <h3><%= event.event_name %></h3>
+                        <p class="event-description"><%= event.event_description %></p>
                         <div class="event-details">
-                            <span>📍 <%= event.location %></span>
-                            <span>🕐 <%= event.time %></span>
+                            <span>📍 <%= event.event_location %></span>
+                            <span>🕐 <%= new Date(event.event_datetime_start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) %></span>
                         </div>
                         <div class="event-capacity">
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: <%= (event.registered / event.capacity) * 100 %>%"></div>
-                            </div>
-                            <span><%= event.registered %>/<%= event.capacity %> registered</span>
+                            <span>Capacity: <%= event.event_capacity %></span>
                         </div>
                         <div class="event-actions">
                             <% if (isManager) { %>
-                                <a href="/events/edit/<%= event.id %>" class="btn-edit">Edit</a>
-                                <form action="/events/delete/<%= event.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this event?');">
+                                <a href="/events/edit/<%= event.occurrence_id %>" class="btn-edit">Edit</a>
+                                <form action="/events/delete/<%= event.occurrence_id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this event?');">
                                     <button type="submit" class="btn-delete">Delete</button>
                                 </form>
                             <% } else { %>
-                                <% if (event.registered < event.capacity) { %>
-                                    <button class="btn-register">Register</button>
-                                <% } else { %>
-                                    <button class="btn-full" disabled>Full</button>
-                                <% } %>
+                                <button class="btn-register">Register</button>
                             <% } %>
                         </div>
                     </div>
@@ -64,4 +57,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

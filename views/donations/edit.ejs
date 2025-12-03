@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Donation - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Edit Donation</h1>
+        </div>
+
+        <div class="form-card">
+            <form action="/donations/edit/<%= donation.donation_id %>" method="POST" class="crud-form">
+                <div class="form-group">
+                    <label for="participant_id">Donor (Participant)</label>
+                    <select id="participant_id" name="participant_id">
+                        <option value="">-- Anonymous --</option>
+                        <% if (participants && participants.length > 0) { %>
+                            <% participants.forEach(p => { %>
+                                <option value="<%= p.participant_id %>" <%= donation.participant_id === p.participant_id ? 'selected' : '' %>><%= p.participant_first_name %> <%= p.participant_last_name %></option>
+                            <% }) %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="donation_amount">Amount ($)</label>
+                        <input type="number" id="donation_amount" name="donation_amount" min="0.01" step="0.01" value="<%= donation.donation_amount %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="donation_date">Date</label>
+                        <input type="date" id="donation_date" name="donation_date" value="<%= donation.donation_date ? new Date(donation.donation_date).toISOString().split('T')[0] : '' %>">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/donations" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

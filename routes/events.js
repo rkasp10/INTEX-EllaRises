@@ -1,77 +1,170 @@
 const express = require("express");
 const router = express.Router();
+const knex = require("knex");
 
-// ============================================
-// MOCK DATA (Replace with database queries later)
-// ============================================
-let mockEvents = [
-  { id: 1, name: "Ballet Folklórico Classes", description: "Traditional Mexican folk dance classes for young women", event_date: "2024-12-08", time: "19:00", location: "Provo Mall", capacity: 25, registered: 18 },
-  { id: 2, name: "STEAM Workshop: Robotics", description: "Introduction to robotics and programming", event_date: "2024-12-15", time: "10:00", location: "UVU Campus", capacity: 20, registered: 20 },
-  { id: 3, name: "Leadership Summit", description: "Building confidence and leadership skills", event_date: "2024-12-20", time: "09:00", location: "BYU Conference Center", capacity: 50, registered: 35 },
-  { id: 4, name: "Art & Heritage Day", description: "Exploring cultural heritage through art", event_date: "2025-01-10", time: "14:00", location: "Provo Recreation Center", capacity: 30, registered: 12 },
-];
+// Database connection
+const db = knex({
+  client: "pg",
+  connection: {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
+  },
+});
 
 function isManager(req) {
   return req.session.user && req.session.user.level === "M";
 }
 
 // ============================================
-// LIST EVENTS
-// - Users: View events and register
-// - Managers: Full CRUD
+// LIST EVENTS (Event Occurrences with Template info)
 // ============================================
-router.get("/", (req, res) => {
-  const events = mockEvents;
-  res.render("events/index", {
-    events,
-    isManager: isManager(req)
-  });
-});
+router.get("/", async (req, res) => {
+  try {
+    const events = await db("event_occurrences")
+      .select(
+        "event_occurrences.occurrence_id",
+        "event_occurrences.event_datetime_start",
+        "event_occurrences.event_datetime_end",
+        "event_occurrences.event_location",
+        "event_occurrences.event_capacity",
+        "event_occurrences.event_registration_deadline",
+        "event_templates.template_id",
+        "event_templates.event_name",
+        "event_templates.event_type",
+        "event_templates.event_description"
+      )
+      .leftJoin("event_templates", "event_occurrences.template_id", "event_templates.template_id")
+      .orderBy("event_occurrences.event_datetime_start", "asc");
 
-// ADD EVENT FORM (Manager only)
-router.get("/add", (req, res) => {
-  if (!isManager(req)) return res.status(403).send("Access denied.");
-  res.render("events/add");
-});
-
-// CREATE EVENT (Manager only)
-router.post("/add", (req, res) => {
-  if (!isManager(req)) return res.status(403).send("Access denied.");
-  const { name, description, event_date, time, location, capacity } = req.body;
-  const newEvent = {
-    id: mockEvents.length + 1,
-    name, description, event_date, time, location,
-    capacity: parseInt(capacity),
-    registered: 0
-  };
-  mockEvents.push(newEvent);
-  res.redirect("/events");
-});
-
-// EDIT EVENT FORM (Manager only)
-router.get("/edit/:id", (req, res) => {
-  if (!isManager(req)) return res.status(403).send("Access denied.");
-  const event = mockEvents.find(e => e.id === parseInt(req.params.id));
-  if (!event) return res.status(404).send("Event not found");
-  res.render("events/edit", { event });
-});
-
-// UPDATE EVENT (Manager only)
-router.post("/edit/:id", (req, res) => {
-  if (!isManager(req)) return res.status(403).send("Access denied.");
-  const { name, description, event_date, time, location, capacity } = req.body;
-  const index = mockEvents.findIndex(e => e.id === parseInt(req.params.id));
-  if (index !== -1) {
-    mockEvents[index] = { ...mockEvents[index], name, description, event_date, time, location, capacity: parseInt(capacity) };
+    res.render("events/index", {
+      events,
+      isManager: isManager(req)
+    });
+  } catch (err) {
+    console.error("Error loading events:", err);
+    res.send("Error loading events: " + err.message);
   }
-  res.redirect("/events");
 });
 
-// DELETE EVENT (Manager only)
-router.post("/delete/:id", (req, res) => {
+// ============================================
+// ADD EVENT FORM (Manager only)
+// ============================================
+router.get("/add", async (req, res) => {
   if (!isManager(req)) return res.status(403).send("Access denied.");
-  mockEvents = mockEvents.filter(e => e.id !== parseInt(req.params.id));
-  res.redirect("/events");
+  
+  try {
+    // Get templates for dropdown
+    const templates = await db("event_templates").select("*");
+    res.render("events/add", { templates });
+  } catch (err) {
+    console.error(err);
+    res.render("events/add", { templates: [] });
+  }
+});
+
+// ============================================
+// CREATE EVENT OCCURRENCE (Manager only)
+// ============================================
+router.post("/add", async (req, res) => {
+  if (!isManager(req)) return res.status(403).send("Access denied.");
+  
+  try {
+    const { 
+      template_id, 
+      event_datetime_start, 
+      event_datetime_end, 
+      event_location, 
+      event_capacity, 
+      event_registration_deadline 
+    } = req.body;
+
+    await db("event_occurrences").insert({
+      template_id,
+      event_datetime_start,
+      event_datetime_end,
+      event_location,
+      event_capacity: parseInt(event_capacity),
+      event_registration_deadline
+    });
+
+    res.redirect("/events");
+  } catch (err) {
+    console.error("Error adding event:", err);
+    res.send("Error adding event: " + err.message);
+  }
+});
+
+// ============================================
+// EDIT EVENT FORM (Manager only)
+// ============================================
+router.get("/edit/:id", async (req, res) => {
+  if (!isManager(req)) return res.status(403).send("Access denied.");
+  
+  try {
+    const event = await db("event_occurrences")
+      .where({ occurrence_id: req.params.id })
+      .first();
+    
+    const templates = await db("event_templates").select("*");
+
+    if (!event) return res.status(404).send("Event not found");
+    res.render("events/edit", { event, templates });
+  } catch (err) {
+    console.error(err);
+    res.send("Error loading event");
+  }
+});
+
+// ============================================
+// UPDATE EVENT (Manager only)
+// ============================================
+router.post("/edit/:id", async (req, res) => {
+  if (!isManager(req)) return res.status(403).send("Access denied.");
+  
+  try {
+    const { 
+      template_id,
+      event_datetime_start, 
+      event_datetime_end, 
+      event_location, 
+      event_capacity,
+      event_registration_deadline
+    } = req.body;
+
+    await db("event_occurrences")
+      .where({ occurrence_id: req.params.id })
+      .update({
+        template_id,
+        event_datetime_start,
+        event_datetime_end,
+        event_location,
+        event_capacity: parseInt(event_capacity),
+        event_registration_deadline
+      });
+
+    res.redirect("/events");
+  } catch (err) {
+    console.error("Error updating event:", err);
+    res.send("Error updating event: " + err.message);
+  }
+});
+
+// ============================================
+// DELETE EVENT (Manager only)
+// ============================================
+router.post("/delete/:id", async (req, res) => {
+  if (!isManager(req)) return res.status(403).send("Access denied.");
+  
+  try {
+    await db("event_occurrences").where({ occurrence_id: req.params.id }).del();
+    res.redirect("/events");
+  } catch (err) {
+    console.error("Error deleting event:", err);
+    res.send("Error deleting event: " + err.message);
+  }
 });
 
 module.exports = router;
