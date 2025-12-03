@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div>
+                <h1><%= isManager ? 'Manage Events' : 'Upcoming Events' %></h1>
+                <p class="page-subtitle"><%= isManager ? 'Create and manage program events' : 'Browse and register for events' %></p>
+            </div>
+            <% if (isManager) { %>
+                <a href="/events/add" class="btn-add">+ Add Event</a>
+            <% } %>
+        </div>
+
+        <% if (events.length === 0) { %>
+            <div class="empty-state">
+                <p>No events found.</p>
+            </div>
+        <% } else { %>
+            <div class="events-grid">
+                <% events.forEach(event => { %>
+                    <div class="event-card">
+                        <div class="event-date-badge">
+                            <%= new Date(event.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                        </div>
+                        <h3><%= event.name %></h3>
+                        <p class="event-description"><%= event.description %></p>
+                        <div class="event-details">
+                            <span>📍 <%= event.location %></span>
+                            <span>🕐 <%= event.time %></span>
+                        </div>
+                        <div class="event-capacity">
+                            <div class="capacity-bar">
+                                <div class="capacity-fill" style="width: <%= (event.registered / event.capacity) * 100 %>%"></div>
+                            </div>
+                            <span><%= event.registered %>/<%= event.capacity %> registered</span>
+                        </div>
+                        <div class="event-actions">
+                            <% if (isManager) { %>
+                                <a href="/events/edit/<%= event.id %>" class="btn-edit">Edit</a>
+                                <form action="/events/delete/<%= event.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this event?');">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                            <% } else { %>
+                                <% if (event.registered < event.capacity) { %>
+                                    <button class="btn-register">Register</button>
+                                <% } else { %>
+                                    <button class="btn-full" disabled>Full</button>
+                                <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

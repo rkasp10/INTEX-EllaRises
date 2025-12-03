@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Milestone - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Edit Milestone</h1>
+        </div>
+
+        <div class="form-card">
+            <form action="/milestones/edit/<%= milestone.id %>" method="POST" class="crud-form">
+                <div class="form-group">
+                    <label for="name">Milestone Name</label>
+                    <input type="text" id="name" name="name" value="<%= milestone.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="2" required><%= milestone.description %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="icon">Icon (emoji)</label>
+                    <input type="text" id="icon" name="icon" value="<%= milestone.icon %>" maxlength="2">
+                </div>
+
+                <div class="form-actions">
+                    <a href="/milestones" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

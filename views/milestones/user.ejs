@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Milestones - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>My Milestones</h1>
+            <p class="page-subtitle">Track your achievements in Ella Rises</p>
+        </div>
+
+        <div class="milestones-grid">
+            <% milestones.forEach(milestone => { %>
+                <div class="milestone-card <%= milestone.achieved ? 'achieved' : 'locked' %>">
+                    <div class="milestone-icon-large"><%= milestone.icon %></div>
+                    <h3><%= milestone.name %></h3>
+                    <p><%= milestone.description %></p>
+                    <% if (milestone.achieved) { %>
+                        <span class="milestone-date">Achieved <%= milestone.achieved.achieved_date %></span>
+                    <% } else { %>
+                        <span class="milestone-locked">🔒 Not yet achieved</span>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

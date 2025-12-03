@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Participants - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div>
+                <h1>Manage Participants</h1>
+                <p class="page-subtitle">View and manage all program participants</p>
+            </div>
+            <a href="/participants/add" class="btn-add">+ Add Participant</a>
+        </div>
+
+        <% if (participants.length === 0) { %>
+            <div class="empty-state">
+                <p>No participants found.</p>
+            </div>
+        <% } else { %>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% participants.forEach(participant => { %>
+                            <tr>
+                                <td><%= participant.participantfirstname %> <%= participant.participantlastname %></td>
+                                <td><%= participant.participantemail %></td>
+                                <td><%= participant.participantphone || '-' %></td>
+                                <td><%= participant.participantcity || '-' %></td>
+                                <td class="actions">
+                                    <a href="/participants/edit/<%= participant.participantid %>" class="btn-edit">Edit</a>
+                                    <form action="/participants/delete/<%= participant.participantid %>" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this participant?');">
+                                        <button type="submit" class="btn-delete">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

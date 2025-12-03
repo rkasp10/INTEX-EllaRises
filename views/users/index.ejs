@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div>
+                <h1>User Management</h1>
+                <p class="page-subtitle">Manage system users and permissions</p>
+            </div>
+            <a href="/users/add" class="btn-add">+ Add User</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><strong><%= user.username %></strong></td>
+                            <td><%= user.email %></td>
+                            <td>
+                                <span class="role-badge <%= user.level === 'M' ? 'manager' : 'user' %>">
+                                    <%= user.level === 'M' ? 'Manager' : 'User' %>
+                                </span>
+                            </td>
+                            <td><%= user.created_date %></td>
+                            <td class="actions">
+                                <a href="/users/edit/<%= user.id %>" class="btn-edit">Edit</a>
+                                <form action="/users/delete/<%= user.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this user?');">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

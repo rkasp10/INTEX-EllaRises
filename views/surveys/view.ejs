@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Survey - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Survey Response</h1>
+        </div>
+
+        <div class="form-card">
+            <div class="survey-view">
+                <div class="survey-view-header">
+                    <h2><%= survey.event_name %></h2>
+                    <p>Submitted by <%= survey.participant_name %> on <%= survey.submitted_date %></p>
+                </div>
+
+                <div class="survey-scores">
+                    <div class="score-item">
+                        <span class="score-label">Satisfaction</span>
+                        <span class="score-value"><%= survey.satisfaction %>/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Usefulness</span>
+                        <span class="score-value"><%= survey.usefulness %>/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Recommend Score</span>
+                        <span class="score-value highlight"><%= survey.recommend %>/10</span>
+                    </div>
+                </div>
+
+                <% if (survey.comments) { %>
+                    <div class="survey-comments">
+                        <h4>Comments</h4>
+                        <p>"<%= survey.comments %>"</p>
+                    </div>
+                <% } %>
+
+                <div class="form-actions">
+                    <a href="/surveys" class="btn-cancel">← Back to Surveys</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+
