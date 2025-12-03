@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Survey Responses - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div>
+                <h1>Survey Responses</h1>
+                <p class="page-subtitle">View all post-event survey feedback</p>
+            </div>
+        </div>
+
+        <% if (surveys.length === 0) { %>
+            <div class="empty-state">
+                <p>No survey responses yet.</p>
+            </div>
+        <% } else { %>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Participant</th>
+                            <th>Satisfaction</th>
+                            <th>Usefulness</th>
+                            <th>Recommend</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% surveys.forEach(survey => { %>
+                            <tr>
+                                <td><%= survey.event_name %></td>
+                                <td><%= survey.participant_name %></td>
+                                <td><span class="rating-badge"><%= survey.satisfaction %>/5</span></td>
+                                <td><span class="rating-badge"><%= survey.usefulness %>/5</span></td>
+                                <td><span class="rating-badge recommend"><%= survey.recommend %>/10</span></td>
+                                <td><%= survey.submitted_date %></td>
+                                <td class="actions">
+                                    <a href="/surveys/view/<%= survey.id %>" class="btn-edit">View</a>
+                                    <form action="/surveys/delete/<%= survey.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this response?');">
+                                        <button type="submit" class="btn-delete">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

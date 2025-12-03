@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Surveys - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>My Surveys</h1>
+        </div>
+
+        <% if (pendingSurvey) { %>
+            <div class="survey-card pending">
+                <div class="survey-card-header">
+                    <span class="survey-badge pending">Pending</span>
+                    <h3><%= pendingSurvey.event_name %></h3>
+                </div>
+                <p>Please share your feedback about this event!</p>
+                
+                <form action="/surveys/submit/<%= pendingSurvey.id %>" method="POST" class="survey-form">
+                    <div class="survey-question">
+                        <label>How satisfied were you with this event? (1-5)</label>
+                        <div class="rating-input">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <input type="radio" name="satisfaction" value="<%= i %>" id="sat<%= i %>" required>
+                                <label for="sat<%= i %>"><%= i %></label>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="survey-question">
+                        <label>How useful was this event for you? (1-5)</label>
+                        <div class="rating-input">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <input type="radio" name="usefulness" value="<%= i %>" id="use<%= i %>" required>
+                                <label for="use<%= i %>"><%= i %></label>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="survey-question">
+                        <label>How likely are you to recommend Ella Rises? (1-10)</label>
+                        <div class="rating-input wide">
+                            <% for(let i = 1; i <= 10; i++) { %>
+                                <input type="radio" name="recommend" value="<%= i %>" id="rec<%= i %>" required>
+                                <label for="rec<%= i %>"><%= i %></label>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comments">Additional Comments</label>
+                        <textarea id="comments" name="comments" rows="3" placeholder="Share your thoughts..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Submit Survey</button>
+                </form>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <p>🎉 You're all caught up! No pending surveys.</p>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

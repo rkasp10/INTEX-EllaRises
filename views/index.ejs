@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ella Rises</title>
+    <title>Ella Rises - Dashboard</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <h1>Welcome to Ella Rises</h1>
-    <p>This is your starting point.</p>
+<body class="dashboard-body">
+    <%- include('partials/navbar') %>
+
+    <main class="dashboard-main">
+        <div class="dashboard-welcome">
+            <h1>Welcome back, <%= currentUser.username %>!</h1>
+            <p class="dashboard-role">
+                <% if (currentUser.level === 'M') { %>
+                    You are logged in as a <strong>Manager</strong>. You can view and manage all data.
+                <% } else { %>
+                    You are logged in as a <strong>Member</strong>. Use the navigation above to explore.
+                <% } %>
+            </p>
+        </div>
+
+        <div class="dashboard-info">
+            <div class="dashboard-info-card">
+                <h3>Quick Guide</h3>
+                <ul>
+                    <li><strong>Participants</strong> — View program participants</li>
+                    <li><strong>Events</strong> — Browse workshops and activities</li>
+                    <li><strong>Surveys</strong> — Access feedback and responses</li>
+                    <li><strong>Milestones</strong> — Track achievements</li>
+                    <li><strong>Donations</strong> — View donation records</li>
+                    <% if (currentUser.level === 'M') { %>
+                    <li><strong>Users</strong> — Manage system accounts</li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <div class="dashboard-info-card dashboard-highlight">
+                <h3>About Ella Rises</h3>
+                <p>
+                    Ella Rises empowers young women ages 7-17 through STEAM education, 
+                    workshops, and mentorship programs that build confidence and inspire 
+                    future leaders.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
 </body>
 </html>

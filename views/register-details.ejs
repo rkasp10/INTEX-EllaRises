@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Complete Registration - Ella Rises</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="login-body">
+
+  <div class="register-wrapper">
+    <div class="register-card">
+      <img class="login-logo" src="/css/images/logo.png" alt="Ella Rises">
+      <h2 class="login-title">Complete Your Profile</h2>
+      <p class="login-subtitle">We couldn't find your email in our system. Please provide your details to join Ella Rises.</p>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+
+      <form action="/register/complete" method="POST" class="crud-form">
+        <!-- Hidden fields from step 1 -->
+        <input type="hidden" name="username" value="<%= username %>">
+        <input type="hidden" name="email" value="<%= email %>">
+        <input type="hidden" name="password" value="<%= password %>">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="participantfirstname">First Name *</label>
+            <input type="text" id="participantfirstname" name="participantfirstname" required>
+          </div>
+          <div class="form-group">
+            <label for="participantlastname">Last Name *</label>
+            <input type="text" id="participantlastname" name="participantlastname" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="participantdob">Date of Birth</label>
+          <input type="date" id="participantdob" name="participantdob">
+        </div>
+
+        <div class="form-group">
+          <label for="participantphone">Phone Number</label>
+          <input type="tel" id="participantphone" name="participantphone" placeholder="801-555-1234">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="participantcity">City</label>
+            <input type="text" id="participantcity" name="participantcity">
+          </div>
+          <div class="form-group">
+            <label for="participantstate">State</label>
+            <input type="text" id="participantstate" name="participantstate" placeholder="UT">
+          </div>
+          <div class="form-group">
+            <label for="participantzip">Zip Code</label>
+            <input type="text" id="participantzip" name="participantzip">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="participantschooloremployer">School or Employer</label>
+          <input type="text" id="participantschooloremployer" name="participantschooloremployer">
+        </div>
+
+        <div class="form-group">
+          <label for="participantfieldofinterest">Field of Interest</label>
+          <input type="text" id="participantfieldofinterest" name="participantfieldofinterest" placeholder="e.g., Science, Art, Technology">
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">Complete Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
+

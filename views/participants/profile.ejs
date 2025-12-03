@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile - Ella Rises</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dashboard-body">
+    <%- include('../partials/navbar') %>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>My Profile</h1>
+        </div>
+
+        <% if (!participant) { %>
+            <div class="profile-card">
+                <div class="profile-empty">
+                    <h2>Welcome to Ella Rises!</h2>
+                    <p>You haven't created your participant profile yet.</p>
+                    <p>Please contact a program manager to get set up.</p>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <%= participant.participantfirstname ? participant.participantfirstname.charAt(0) : '?' %><%= participant.participantlastname ? participant.participantlastname.charAt(0) : '' %>
+                    </div>
+                    <div class="profile-name">
+                        <h2><%= participant.participantfirstname %> <%= participant.participantlastname %></h2>
+                        <p>Ella Rises Participant</p>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-detail">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value"><%= participant.participantemail %></span>
+                    </div>
+                    <div class="profile-detail">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value"><%= participant.participantphone || 'Not provided' %></span>
+                    </div>
+                    <div class="profile-detail">
+                        <span class="detail-label">City</span>
+                        <span class="detail-value"><%= participant.participantcity || 'Not provided' %></span>
+                    </div>
+                    <div class="profile-detail">
+                        <span class="detail-label">State</span>
+                        <span class="detail-value"><%= participant.participantstate || 'Not provided' %></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links for Participants -->
+            <div class="profile-links">
+                <h3>Quick Links</h3>
+                <div class="profile-links-grid">
+                    <a href="/events" class="profile-link-card">
+                        <span class="link-icon">📅</span>
+                        <span class="link-text">View Events</span>
+                    </a>
+                    <a href="/surveys" class="profile-link-card">
+                        <span class="link-icon">📝</span>
+                        <span class="link-text">My Surveys</span>
+                    </a>
+                    <a href="/milestones" class="profile-link-card">
+                        <span class="link-icon">🏆</span>
+                        <span class="link-text">My Milestones</span>
+                    </a>
+                </div>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
+
