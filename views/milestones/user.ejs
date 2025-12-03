@@ -13,23 +13,23 @@
             <p class="page-subtitle">Track your achievements in Ella Rises</p>
         </div>
 
-        <div class="milestones-grid">
-            <% milestones.forEach(milestone => { %>
-                <div class="milestone-card <%= milestone.achieved ? 'achieved' : 'locked' %>">
-                    <div class="milestone-icon-large"><%= milestone.icon %></div>
-                    <h3><%= milestone.name %></h3>
-                    <p><%= milestone.description %></p>
-                    <% if (milestone.achieved) { %>
-                        <span class="milestone-date">Achieved <%= milestone.achieved.achieved_date %></span>
-                    <% } else { %>
-                        <span class="milestone-locked">🔒 Not yet achieved</span>
-                    <% } %>
-                </div>
-            <% }) %>
-        </div>
+        <% if (milestones.length === 0) { %>
+            <div class="empty-state">
+                <p>No milestones achieved yet. Keep participating to earn milestones!</p>
+            </div>
+        <% } else { %>
+            <div class="milestones-grid">
+                <% milestones.forEach(milestone => { %>
+                    <div class="milestone-card achieved">
+                        <div class="milestone-icon-large">🏆</div>
+                        <h3><%= milestone.milestone_title %></h3>
+                        <span class="milestone-date">Achieved <%= milestone.milestone_date ? new Date(milestone.milestone_date).toLocaleDateString() : '' %></span>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
     </main>
 
     <%- include('../partials/footer') %>
 </body>
 </html>
-

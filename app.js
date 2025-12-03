@@ -36,6 +36,7 @@ const db = knex({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
   },
 });
 
@@ -97,19 +98,19 @@ app.post("/login", async (req, res) => {
 
   try {
     // Using knex to query the database
-    // Join app_user with participants to get role info
-    const user = await db("app_user")
+    // Join users with participants to get role info
+    const user = await db("users")
       .select(
-        "app_user.user_id",
-        "app_user.username",
-        "app_user.password",
-        "app_user.participant_id",
-        "participants.participantrole",
-        "participants.participantfirstname",
-        "participants.participantlastname"
+        "users.user_id",
+        "users.username",
+        "users.password",
+        "users.participant_id",
+        "participants.participant_role",
+        "participants.participant_first_name",
+        "participants.participant_last_name"
       )
-      .leftJoin("participants", "app_user.participant_id", "participants.participantid")
-      .where({ "app_user.username": username })
+      .leftJoin("participants", "users.participant_id", "participants.participant_id")
+      .where({ "users.username": username })
       .first();
 
     console.log("Login attempt:", { username, password });
@@ -124,16 +125,16 @@ app.post("/login", async (req, res) => {
       return res.send("Invalid username or password");
     }
 
-    // Check participantrole to determine if admin or participant
-    const isManager = user.participantrole === "admin";
+    // Check participant_role to determine if admin or participant
+    const isManager = user.participant_role === "admin";
 
     req.session.user = {
       id: user.user_id,
       username: user.username,
       level: isManager ? "M" : "U",
       participant_id: user.participant_id,
-      firstName: user.participantfirstname,
-      lastName: user.participantlastname
+      firstName: user.participant_first_name,
+      lastName: user.participant_last_name
     };
 
     console.log("Login successful, session set:", req.session.user);
@@ -170,35 +171,35 @@ app.post("/register", async (req, res) => {
 
   try {
     // Check if username already exists
-    const existingUser = await db("app_user").where({ username }).first();
+    const existingUser = await db("users").where({ username }).first();
     if (existingUser) {
       return res.render("register", { error: "Username already taken" });
     }
 
     // Check if email exists in participants table
     const participant = await db("participants")
-      .where({ participantemail: email })
+      .where({ participant_email: email })
       .first();
 
     if (participant) {
       // Email found! Create user and link to existing participant
-      const [newUser] = await db("app_user")
+      const [newUser] = await db("users")
         .insert({
           username,
           password, // TODO: Hash with bcrypt
-          participant_id: participant.participantid
+          participant_id: participant.participant_id
         })
         .returning("*");
 
       // Log them in automatically
-      const isManager = participant.participantrole === "admin";
+      const isManager = participant.participant_role === "admin";
       req.session.user = {
         id: newUser.user_id,
         username: newUser.username,
         level: isManager ? "M" : "U",
-        participant_id: participant.participantid,
-        firstName: participant.participantfirstname,
-        lastName: participant.participantlastname
+        participant_id: participant.participant_id,
+        firstName: participant.participant_first_name,
+        lastName: participant.participant_last_name
       };
 
       return res.redirect("/");
@@ -221,35 +222,35 @@ app.post("/register", async (req, res) => {
 app.post("/register/complete", async (req, res) => {
   const {
     username, email, password,
-    participantfirstname, participantlastname, participantdob,
-    participantphone, participantcity, participantstate, participantzip,
-    participantschooloremployer, participantfieldofinterest
+    participant_first_name, participant_last_name, participant_dob,
+    participant_phone, participant_city, participant_state, participant_zip,
+    participant_school_or_employer, participant_field_of_interest
   } = req.body;
 
   try {
     // Create new participant record
     const [newParticipant] = await db("participants")
       .insert({
-        participantemail: email,
-        participantfirstname,
-        participantlastname,
-        participantdob: participantdob || null,
-        participantphone,
-        participantcity,
-        participantstate,
-        participantzip,
-        participantschooloremployer,
-        participantfieldofinterest,
-        participantrole: "participant" // New users are regular participants
+        participant_email: email,
+        participant_first_name,
+        participant_last_name,
+        participant_dob: participant_dob || null,
+        participant_phone,
+        participant_city,
+        participant_state,
+        participant_zip,
+        participant_school_or_employer,
+        participant_field_of_interest,
+        participant_role: "participant" // New users are regular participants
       })
       .returning("*");
 
     // Create user account linked to new participant
-    const [newUser] = await db("app_user")
+    const [newUser] = await db("users")
       .insert({
         username,
         password, // TODO: Hash with bcrypt
-        participant_id: newParticipant.participantid
+        participant_id: newParticipant.participant_id
       })
       .returning("*");
 
@@ -258,9 +259,9 @@ app.post("/register/complete", async (req, res) => {
       id: newUser.user_id,
       username: newUser.username,
       level: "U", // New registrations are always regular users
-      participant_id: newParticipant.participantid,
-      firstName: newParticipant.participantfirstname,
-      lastName: newParticipant.participantlastname
+      participant_id: newParticipant.participant_id,
+      firstName: newParticipant.participant_first_name,
+      lastName: newParticipant.participant_last_name
     };
 
     res.redirect("/");

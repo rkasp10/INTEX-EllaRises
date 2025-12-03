@@ -12,56 +12,45 @@
             <h1>My Surveys</h1>
         </div>
 
-        <% if (pendingSurvey) { %>
-            <div class="survey-card pending">
-                <div class="survey-card-header">
-                    <span class="survey-badge pending">Pending</span>
-                    <h3><%= pendingSurvey.event_name %></h3>
+        <% if (pendingSurveys && pendingSurveys.length > 0) { %>
+            <h3>Pending Surveys</h3>
+            <% pendingSurveys.forEach(survey => { %>
+                <div class="survey-card pending">
+                    <div class="survey-card-header">
+                        <span class="survey-badge pending">Pending</span>
+                        <h3><%= survey.event_name %></h3>
+                    </div>
+                    <p>Please share your feedback about this event!</p>
+                    <a href="/surveys/fill/<%= survey.registration_id %>" class="btn-submit">Fill Survey</a>
                 </div>
-                <p>Please share your feedback about this event!</p>
-                
-                <form action="/surveys/submit/<%= pendingSurvey.id %>" method="POST" class="survey-form">
-                    <div class="survey-question">
-                        <label>How satisfied were you with this event? (1-5)</label>
-                        <div class="rating-input">
-                            <% for(let i = 1; i <= 5; i++) { %>
-                                <input type="radio" name="satisfaction" value="<%= i %>" id="sat<%= i %>" required>
-                                <label for="sat<%= i %>"><%= i %></label>
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <div class="survey-question">
-                        <label>How useful was this event for you? (1-5)</label>
-                        <div class="rating-input">
-                            <% for(let i = 1; i <= 5; i++) { %>
-                                <input type="radio" name="usefulness" value="<%= i %>" id="use<%= i %>" required>
-                                <label for="use<%= i %>"><%= i %></label>
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <div class="survey-question">
-                        <label>How likely are you to recommend Ella Rises? (1-10)</label>
-                        <div class="rating-input wide">
-                            <% for(let i = 1; i <= 10; i++) { %>
-                                <input type="radio" name="recommend" value="<%= i %>" id="rec<%= i %>" required>
-                                <label for="rec<%= i %>"><%= i %></label>
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="comments">Additional Comments</label>
-                        <textarea id="comments" name="comments" rows="3" placeholder="Share your thoughts..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Submit Survey</button>
-                </form>
-            </div>
+            <% }) %>
         <% } else { %>
             <div class="empty-state">
                 <p>🎉 You're all caught up! No pending surveys.</p>
+            </div>
+        <% } %>
+
+        <% if (completedSurveys && completedSurveys.length > 0) { %>
+            <h3 style="margin-top: 30px;">Completed Surveys</h3>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Satisfaction</th>
+                            <th>Date Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% completedSurveys.forEach(survey => { %>
+                            <tr>
+                                <td><%= survey.event_name %></td>
+                                <td><span class="rating-badge"><%= survey.survey_satisfaction_score %>/5</span></td>
+                                <td><%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString() : '-' %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
         <% } %>
     </main>
@@ -69,4 +58,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

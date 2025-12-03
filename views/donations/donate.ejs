@@ -16,17 +16,10 @@
       <p class="donate-tagline">Your donation helps empower young women through STEAM education</p>
 
       <form action="/donations/donate" method="POST" class="donate-form">
-        <label for="donor_name">Your Name</label>
-        <input type="text" id="donor_name" name="donor_name" placeholder="Enter your full name" required>
+        <label for="donation_amount">Donation Amount ($)</label>
+        <input type="number" id="donation_amount" name="donation_amount" min="1" step="0.01" placeholder="25.00" required>
 
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-
-        <label for="amount">Donation Amount ($)</label>
-        <input type="number" id="amount" name="amount" min="1" step="0.01" placeholder="25.00" required>
-
-        <label for="message">Message (Optional)</label>
-        <textarea id="message" name="message" rows="3" placeholder="Leave a message of support..."></textarea>
+        <input type="hidden" name="participant_id" value="">
 
         <button type="submit" class="donate-submit-btn">Complete Donation</button>
       </form>
@@ -39,4 +32,3 @@
 
 </body>
 </html>
-

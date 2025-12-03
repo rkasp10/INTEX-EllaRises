@@ -29,19 +29,25 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>City</th>
+                            <th>Role</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% participants.forEach(participant => { %>
                             <tr>
-                                <td><%= participant.participantfirstname %> <%= participant.participantlastname %></td>
-                                <td><%= participant.participantemail %></td>
-                                <td><%= participant.participantphone || '-' %></td>
-                                <td><%= participant.participantcity || '-' %></td>
+                                <td><%= participant.participant_first_name %> <%= participant.participant_last_name %></td>
+                                <td><%= participant.participant_email %></td>
+                                <td><%= participant.participant_phone || '-' %></td>
+                                <td><%= participant.participant_city || '-' %></td>
+                                <td>
+                                    <span class="role-badge <%= participant.participant_role === 'admin' ? 'manager' : 'user' %>">
+                                        <%= participant.participant_role || 'participant' %>
+                                    </span>
+                                </td>
                                 <td class="actions">
-                                    <a href="/participants/edit/<%= participant.participantid %>" class="btn-edit">Edit</a>
-                                    <form action="/participants/delete/<%= participant.participantid %>" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this participant?');">
+                                    <a href="/participants/edit/<%= participant.participant_id %>" class="btn-edit">Edit</a>
+                                    <form action="/participants/delete/<%= participant.participant_id %>" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this participant?');">
                                         <button type="submit" class="btn-delete">Delete</button>
                                     </form>
                                 </td>
@@ -56,4 +62,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

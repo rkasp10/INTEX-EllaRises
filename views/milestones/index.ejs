@@ -11,41 +11,46 @@
         <div class="page-header">
             <div>
                 <h1>Manage Milestones</h1>
-                <p class="page-subtitle">Create and manage achievement milestones</p>
+                <p class="page-subtitle">View and manage participant milestones</p>
             </div>
             <a href="/milestones/add" class="btn-add">+ Add Milestone</a>
         </div>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Icon</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% milestones.forEach(milestone => { %>
+        <% if (milestones.length === 0) { %>
+            <div class="empty-state">
+                <p>No milestones recorded yet.</p>
+            </div>
+        <% } else { %>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <td class="milestone-icon"><%= milestone.icon %></td>
-                            <td><strong><%= milestone.name %></strong></td>
-                            <td><%= milestone.description %></td>
-                            <td class="actions">
-                                <a href="/milestones/edit/<%= milestone.id %>" class="btn-edit">Edit</a>
-                                <form action="/milestones/delete/<%= milestone.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this milestone?');">
-                                    <button type="submit" class="btn-delete">Delete</button>
-                                </form>
-                            </td>
+                            <th>Participant</th>
+                            <th>Milestone</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <% milestones.forEach(milestone => { %>
+                            <tr>
+                                <td><%= milestone.participant_first_name %> <%= milestone.participant_last_name %></td>
+                                <td><strong><%= milestone.milestone_title %></strong></td>
+                                <td><%= milestone.milestone_date ? new Date(milestone.milestone_date).toLocaleDateString() : '-' %></td>
+                                <td class="actions">
+                                    <a href="/milestones/edit/<%= milestone.milestone_id %>" class="btn-edit">Edit</a>
+                                    <form action="/milestones/delete/<%= milestone.milestone_id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this milestone?');">
+                                        <button type="submit" class="btn-delete">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
     </main>
 
     <%- include('../partials/footer') %>
 </body>
 </html>
-

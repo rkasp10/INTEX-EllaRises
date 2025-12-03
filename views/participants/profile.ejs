@@ -24,10 +24,10 @@
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-avatar">
-                        <%= participant.participantfirstname ? participant.participantfirstname.charAt(0) : '?' %><%= participant.participantlastname ? participant.participantlastname.charAt(0) : '' %>
+                        <%= participant.participant_first_name ? participant.participant_first_name.charAt(0) : '?' %><%= participant.participant_last_name ? participant.participant_last_name.charAt(0) : '' %>
                     </div>
                     <div class="profile-name">
-                        <h2><%= participant.participantfirstname %> <%= participant.participantlastname %></h2>
+                        <h2><%= participant.participant_first_name %> <%= participant.participant_last_name %></h2>
                         <p>Ella Rises Participant</p>
                     </div>
                 </div>
@@ -35,19 +35,19 @@
                 <div class="profile-details">
                     <div class="profile-detail">
                         <span class="detail-label">Email</span>
-                        <span class="detail-value"><%= participant.participantemail %></span>
+                        <span class="detail-value"><%= participant.participant_email %></span>
                     </div>
                     <div class="profile-detail">
                         <span class="detail-label">Phone</span>
-                        <span class="detail-value"><%= participant.participantphone || 'Not provided' %></span>
+                        <span class="detail-value"><%= participant.participant_phone || 'Not provided' %></span>
                     </div>
                     <div class="profile-detail">
                         <span class="detail-label">City</span>
-                        <span class="detail-value"><%= participant.participantcity || 'Not provided' %></span>
+                        <span class="detail-value"><%= participant.participant_city || 'Not provided' %></span>
                     </div>
                     <div class="profile-detail">
                         <span class="detail-label">State</span>
-                        <span class="detail-value"><%= participant.participantstate || 'Not provided' %></span>
+                        <span class="detail-value"><%= participant.participant_state || 'Not provided' %></span>
                     </div>
                 </div>
             </div>
@@ -76,4 +76,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

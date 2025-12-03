@@ -15,18 +15,25 @@
         <div class="form-card">
             <form action="/milestones/add" method="POST" class="crud-form">
                 <div class="form-group">
-                    <label for="name">Milestone Name</label>
-                    <input type="text" id="name" name="name" required>
+                    <label for="participant_id">Participant</label>
+                    <select id="participant_id" name="participant_id" required>
+                        <option value="">-- Select Participant --</option>
+                        <% if (participants && participants.length > 0) { %>
+                            <% participants.forEach(p => { %>
+                                <option value="<%= p.participant_id %>"><%= p.participant_first_name %> <%= p.participant_last_name %></option>
+                            <% }) %>
+                        <% } %>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="2" required></textarea>
+                    <label for="milestone_title">Milestone Title</label>
+                    <input type="text" id="milestone_title" name="milestone_title" placeholder="e.g., First Event Attended" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="icon">Icon (emoji)</label>
-                    <input type="text" id="icon" name="icon" placeholder="🏆" maxlength="2">
+                    <label for="milestone_date">Date Achieved</label>
+                    <input type="date" id="milestone_date" name="milestone_date" value="<%= new Date().toISOString().split('T')[0] %>">
                 </div>
 
                 <div class="form-actions">
@@ -40,4 +47,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-
