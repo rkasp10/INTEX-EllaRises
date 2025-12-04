@@ -264,18 +264,8 @@
                 
                 <div class="dropdown-filters">
                     <div class="filter-group">
-                        <label>Event Name</label>
-                        <select name="name">
-                            <option value="">All Events</option>
-                            <% eventTemplates.forEach(t => { %>
-                                <option value="<%= t.template_id %>" <%= eventName == t.template_id ? 'selected' : '' %>><%= t.event_name %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
                         <label>Event Type</label>
-                        <select name="type">
+                        <select name="type" onchange="this.form.submit()">
                             <option value="">All Types</option>
                             <% eventTypes.forEach(type => { %>
                                 <option value="<%= type %>" <%= eventType === type ? 'selected' : '' %>><%= type %></option>
@@ -284,29 +274,48 @@
                     </div>
 
                     <div class="filter-group">
-                        <label>Month</label>
-                        <select name="month">
-                            <option value="">All Months</option>
-                            <% eventMonths.forEach(m => { %>
-                                <option value="<%= m.month_value %>" <%= eventMonth === m.month_value ? 'selected' : '' %>><%= m.month_label %></option>
+                        <label>Event Name</label>
+                        <select name="name" onchange="this.form.submit()">
+                            <option value="">All Events</option>
+                            <% eventTemplates.forEach(t => { %>
+                                <option value="<%= t.template_id %>" <%= eventName == t.template_id ? 'selected' : '' %>><%= t.event_name %></option>
                             <% }) %>
                         </select>
                     </div>
 
-                    <div class="filter-actions">
-                        <button type="submit" class="btn-filter">Apply</button>
-                        <% if (eventName || eventType || eventMonth) { %>
-                            <a href="/events?filter=<%= filter %>" class="btn-clear">Clear</a>
-                        <% } %>
+                    <div class="filter-group">
+                        <label>Year</label>
+                        <select name="year" onchange="this.form.submit()">
+                            <option value="">All Years</option>
+                            <% availableYears.forEach(year => { %>
+                                <option value="<%= year %>" <%= filterYear == year ? 'selected' : '' %>><%= year %></option>
+                            <% }) %>
+                        </select>
                     </div>
+
+                    <div class="filter-group">
+                        <label>Month</label>
+                        <select name="month" onchange="this.form.submit()">
+                            <option value="">All Months</option>
+                            <% months.forEach(m => { %>
+                                <option value="<%= m.value %>" <%= filterMonth == m.value ? 'selected' : '' %>><%= m.label %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <% if (eventType || eventName || filterYear || filterMonth) { %>
+                        <div class="filter-actions">
+                            <a href="/events?filter=<%= filter %>" class="btn-clear">Clear Filters</a>
+                        </div>
+                    <% } %>
                 </div>
             </form>
         </div>
 
         <% if (events.length === 0) { %>
             <div class="empty-state">
-                <p>No <%= filter === 'past' ? 'past' : 'upcoming' %> events found<%= (eventName || eventType || eventMonth) ? ' matching your filters' : '' %>.</p>
-                <% if (eventName || eventType || eventMonth) { %>
+                <p>No <%= filter === 'past' ? 'past' : 'upcoming' %> events found<%= (eventType || eventName || filterYear || filterMonth) ? ' matching your filters' : '' %>.</p>
+                <% if (eventType || eventName || filterYear || filterMonth) { %>
                     <p><a href="/events?filter=<%= filter %>">Clear filters</a></p>
                 <% } %>
             </div>
@@ -352,9 +361,10 @@
                 <% 
                     // Build query string for pagination links
                     let queryParams = `filter=${filter}`;
-                    if (eventName) queryParams += `&name=${eventName}`;
                     if (eventType) queryParams += `&type=${encodeURIComponent(eventType)}`;
-                    if (eventMonth) queryParams += `&month=${eventMonth}`;
+                    if (eventName) queryParams += `&name=${eventName}`;
+                    if (filterYear) queryParams += `&year=${filterYear}`;
+                    if (filterMonth) queryParams += `&month=${filterMonth}`;
                 %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>

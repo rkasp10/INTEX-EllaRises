@@ -3,51 +3,252 @@
 <head>
     <title>View Survey - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .survey-detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .survey-detail-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--pink-light);
+        }
+        .survey-detail-header h2 {
+            margin: 0 0 8px 0;
+            color: var(--green-dark);
+            font-size: 1.5rem;
+        }
+        .event-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--blue);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .survey-meta {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 12px;
+        }
+        .survey-meta span {
+            display: inline-block;
+            margin: 0 8px;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .score-card {
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Detractor - red underline on recommendation score */
+        .score-card.detractor-score .score-value {
+            text-decoration: underline;
+            text-decoration-color: #dc2626;
+            text-underline-offset: 4px;
+        }
+        .score-card .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .score-card .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #999;
+            text-align: center;
+            width: 100%;
+        }
+        .scores-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin: 0 0 24px 0;
+            font-style: italic;
+        }
+
+        .nps-section {
+            background: var(--pink-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .nps-section h4 {
+            margin: 0 0 8px 0;
+            color: var(--green-dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nps-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .nps-badge.promoter {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .nps-badge.passive {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .nps-badge.detractor {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .comments-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .comments-section h4 {
+            margin: 0 0 12px 0;
+            color: var(--green-dark);
+            font-size: 0.9rem;
+        }
+        .comments-section p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .participant-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px solid var(--pink-light);
+        }
+        .btn-back {
+            padding: 12px 24px;
+            background: #f0f0f0;
+            color: #666;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+    </style>
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
         <div class="page-header">
-            <h1>Survey Response</h1>
+            <h1>Survey Response Details</h1>
+            <p class="page-subtitle">Individual feedback breakdown</p>
         </div>
 
-        <div class="form-card">
-            <div class="survey-view">
-                <div class="survey-view-header">
-                    <h2><%= survey.event_name || 'Event Survey' %></h2>
-                    <p>Submitted by <%= survey.participant_first_name %> <%= survey.participant_last_name %> on <%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString() : 'N/A' %></p>
+        <div class="survey-detail-card">
+            <div class="survey-detail-header">
+                <h2>
+                    <%= survey.event_name || 'Event Survey' %>
+                    <% if (survey.event_type) { %>
+                        <span class="event-type-badge"><%= survey.event_type %></span>
+                    <% } %>
+                </h2>
+                <div class="survey-meta">
+                    <% if (survey.event_datetime_start) { %>
+                        <span>📅 <%= new Date(survey.event_datetime_start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></span>
+                    <% } %>
+                    <% if (survey.event_location) { %>
+                        <span>📍 <%= survey.event_location %></span>
+                    <% } %>
                 </div>
+            </div>
 
-                <div class="survey-scores">
-                    <div class="score-item">
-                        <span class="score-label">Satisfaction</span>
-                        <span class="score-value"><%= survey.survey_satisfaction_score %>/5</span>
-                    </div>
-                    <div class="score-item">
-                        <span class="score-label">Usefulness</span>
-                        <span class="score-value"><%= survey.survey_usefulness_score %>/5</span>
-                    </div>
-                    <div class="score-item">
-                        <span class="score-label">Instructor</span>
-                        <span class="score-value"><%= survey.survey_instructor_score %>/5</span>
-                    </div>
-                    <div class="score-item">
-                        <span class="score-label">Overall Score</span>
-                        <span class="score-value highlight"><%= survey.survey_overall_score %>/5</span>
-                    </div>
+            <% 
+                const isDetractor = survey.bucket_name && survey.bucket_name.toLowerCase().includes('detractor');
+                // Color gradient for overall score (handles decimals)
+                const overallColors = {
+                    1: '#dc2626',  // red
+                    2: '#ea580c',  // orange
+                    3: '#ca8a04',  // yellow/amber
+                    4: '#65a30d',  // lime
+                    5: '#16a34a'   // green
+                };
+                const overallScore = Math.round(survey.survey_overall_score) || 3;
+                const overallTextColor = overallColors[overallScore] || overallColors[3];
+            %>
+
+            <div class="scores-grid">
+                <div class="score-card">
+                    <div class="score-value" style="color: <%= overallTextColor %>;"><%= survey.survey_overall_score %></div>
+                    <div class="score-label">Overall</div>
                 </div>
+                <div class="score-card">
+                    <div class="score-value"><%= survey.survey_satisfaction_score %></div>
+                    <div class="score-label">Satisfaction</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value"><%= survey.survey_usefulness_score %></div>
+                    <div class="score-label">Usefulness</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value"><%= survey.survey_instructor_score %></div>
+                    <div class="score-label">Instructor</div>
+                </div>
+                <div class="score-card <%= isDetractor ? 'detractor-score' : '' %>">
+                    <div class="score-value"><%= survey.recommendation_score || '-' %></div>
+                    <div class="score-label">Recommendation</div>
+                </div>
+            </div>
+            <p class="scores-note">All scores out of 5</p>
 
-                <% if (survey.survey_comments) { %>
-                    <div class="survey-comments">
-                        <h4>Comments</h4>
-                        <p>"<%= survey.survey_comments %>"</p>
-                    </div>
+            <% if (survey.survey_comments) { %>
+                <div class="comments-section">
+                    <h4>Participant Comments</h4>
+                    <p>"<%= survey.survey_comments %>"</p>
+                </div>
+            <% } %>
+
+            <div class="participant-info">
+                <span><strong>Submitted by:</strong> <%= survey.participant_first_name %> <%= survey.participant_last_name %></span>
+                <% if (survey.participant_email) { %>
+                    <span><%= survey.participant_email %></span>
                 <% } %>
+                <span><strong>Date:</strong> <%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A' %></span>
+            </div>
 
-                <div class="form-actions">
-                    <a href="/surveys" class="btn-cancel">← Back to Surveys</a>
-                </div>
+            <div class="form-actions">
+                <a href="/surveys" class="btn-back">← Back to Surveys</a>
             </div>
         </div>
     </main>
@@ -55,3 +256,4 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
+

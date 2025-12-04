@@ -3,6 +3,155 @@
 <head>
     <title>Fill Survey - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .survey-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .survey-event-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--pink-light);
+        }
+        .survey-event-header h2 {
+            margin: 0 0 8px 0;
+            color: var(--green-dark);
+            font-size: 1.5rem;
+        }
+        .survey-event-header .event-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .survey-question {
+            margin-bottom: 28px;
+        }
+        .survey-question label {
+            display: block;
+            font-weight: 500;
+            color: var(--green-dark);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .rating-input {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+        .rating-input label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            color: #666;
+            background: white;
+        }
+        .rating-input label:hover {
+            border-color: var(--sage);
+            background: var(--pink-light);
+        }
+        .rating-input input[type="radio"]:checked + label {
+            background: var(--sage);
+            border-color: var(--sage);
+            color: white;
+        }
+        
+        /* Recommendation scale (1-5 with labels) */
+        .recommendation-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .comments-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid var(--pink-light);
+        }
+        .comments-section label {
+            display: block;
+            font-weight: 500;
+            color: var(--green-dark);
+            margin-bottom: 12px;
+        }
+        .comments-section textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .comments-section textarea:focus {
+            outline: none;
+            border-color: var(--sage);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        .btn-cancel {
+            padding: 14px 28px;
+            background: #f0f0f0;
+            color: #666;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+        .btn-submit {
+            padding: 14px 36px;
+            background: var(--sage);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .btn-submit:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+        .score-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 8px;
+        }
+    </style>
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -10,54 +159,72 @@
     <main class="page-container">
         <div class="page-header">
             <h1>Event Survey</h1>
-            <p class="page-subtitle"><%= registration.event_name %></p>
+            <p class="page-subtitle">Your feedback helps us improve future events</p>
         </div>
 
-        <div class="form-card">
-            <form action="/surveys/submit/<%= registration.registration_id %>" method="POST" class="crud-form">
+        <div class="survey-card">
+            <div class="survey-event-header">
+                <h2><%= registration.event_name %></h2>
+                <p class="event-date">
+                    <% if (registration.event_datetime_start) { %>
+                        <%= new Date(registration.event_datetime_start).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                        }) %>
+                    <% } %>
+                </p>
+            </div>
+
+            <form action="/surveys/submit/<%= registration.registration_id %>" method="POST">
                 <div class="survey-question">
-                    <label>How satisfied were you with this event? (1-5)</label>
+                    <label>How satisfied were you with this event?</label>
                     <div class="rating-input">
                         <% for(let i = 1; i <= 5; i++) { %>
                             <input type="radio" name="survey_satisfaction_score" value="<%= i %>" id="sat<%= i %>" required>
                             <label for="sat<%= i %>"><%= i %></label>
                         <% } %>
                     </div>
+                    <p class="score-hint">1 = Very Unsatisfied, 5 = Very Satisfied</p>
                 </div>
 
                 <div class="survey-question">
-                    <label>How useful was this event for you? (1-5)</label>
+                    <label>How useful was this event for you?</label>
                     <div class="rating-input">
                         <% for(let i = 1; i <= 5; i++) { %>
                             <input type="radio" name="survey_usefulness_score" value="<%= i %>" id="use<%= i %>" required>
                             <label for="use<%= i %>"><%= i %></label>
                         <% } %>
                     </div>
+                    <p class="score-hint">1 = Not Useful, 5 = Extremely Useful</p>
                 </div>
 
                 <div class="survey-question">
-                    <label>How would you rate the instructor? (1-5)</label>
+                    <label>How would you rate the instructor/facilitator?</label>
                     <div class="rating-input">
                         <% for(let i = 1; i <= 5; i++) { %>
                             <input type="radio" name="survey_instructor_score" value="<%= i %>" id="inst<%= i %>" required>
                             <label for="inst<%= i %>"><%= i %></label>
                         <% } %>
                     </div>
+                    <p class="score-hint">1 = Poor, 5 = Excellent</p>
                 </div>
 
                 <div class="survey-question">
-                    <label>Overall rating (1-5)</label>
+                    <label>How likely are you to recommend this event to others?</label>
                     <div class="rating-input">
                         <% for(let i = 1; i <= 5; i++) { %>
-                            <input type="radio" name="survey_overall_score" value="<%= i %>" id="overall<%= i %>" required>
-                            <label for="overall<%= i %>"><%= i %></label>
+                            <input type="radio" name="survey_recommendation_score" value="<%= i %>" id="rec<%= i %>" required>
+                            <label for="rec<%= i %>"><%= i %></label>
                         <% } %>
                     </div>
+                    <p class="score-hint">1 = Would Not Recommend, 5 = Highly Recommend</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="survey_comments">Additional Comments</label>
-                    <textarea id="survey_comments" name="survey_comments" rows="4" placeholder="Share your thoughts..."></textarea>
+                <div class="comments-section">
+                    <label for="survey_comments">Additional Comments (Optional)</label>
+                    <textarea id="survey_comments" name="survey_comments" placeholder="Share any thoughts, suggestions, or feedback about the event..."></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -71,4 +238,3 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
-

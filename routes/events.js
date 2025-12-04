@@ -18,6 +18,17 @@ function isManager(req) {
   return req.session.user && req.session.user.level === "M";
 }
 
+// Helper to normalize datetime format from "2025-12-17T10:00" to "2025-12-17 10:00:00"
+function normalizeDateTime(datetime) {
+  if (!datetime) return null;
+  // Replace T with space and add :00 for seconds if missing
+  let normalized = datetime.replace('T', ' ');
+  if (normalized.length === 16) { // "2025-12-17 10:00" - missing seconds
+    normalized += ':00';
+  }
+  return normalized;
+}
+
 // ============================================
 // MAIN EVENTS PAGE
 // - Managers: See all events with full management
@@ -33,23 +44,49 @@ router.get("/", async (req, res) => {
 
     if (isManager(req)) {
       // ========== ADMIN VIEW ==========
-      const eventName = req.query.name || "";
       const eventType = req.query.type || "";
-      const eventMonth = req.query.month || "";
+      const eventName = req.query.name || "";
+      const filterYear = req.query.year || "";
+      const filterMonth = req.query.month || "";
 
-      // Get filter options
-      const eventTemplates = await db("event_templates")
-        .select("template_id", "event_name")
-        .orderBy("event_name");
-
+      // Get all event types
       const eventTypes = await db("event_templates")
         .distinct("event_type")
         .whereNotNull("event_type")
         .orderBy("event_type");
 
-      const monthsQuery = await db("event_occurrences")
-        .select(db.raw("DISTINCT TO_CHAR(event_datetime_start::timestamp, 'YYYY-MM') as month_value, TO_CHAR(event_datetime_start::timestamp, 'Mon YYYY') as month_label"))
-        .orderBy("month_value", "desc");
+      // Get event templates - filtered by type if selected (cascading filter)
+      let eventTemplatesQuery = db("event_templates")
+        .select("template_id", "event_name", "event_type")
+        .orderBy("event_name");
+      
+      if (eventType) {
+        eventTemplatesQuery = eventTemplatesQuery.where("event_type", eventType);
+      }
+      
+      const eventTemplates = await eventTemplatesQuery;
+
+      // Get available years from events
+      const availableYears = await db("event_occurrences")
+        .select(db.raw("DISTINCT EXTRACT(YEAR FROM event_datetime_start::timestamp) as year"))
+        .whereNotNull("event_datetime_start")
+        .orderBy("year", "desc");
+
+      // Month options
+      const months = [
+        { value: '1', label: 'January' },
+        { value: '2', label: 'February' },
+        { value: '3', label: 'March' },
+        { value: '4', label: 'April' },
+        { value: '5', label: 'May' },
+        { value: '6', label: 'June' },
+        { value: '7', label: 'July' },
+        { value: '8', label: 'August' },
+        { value: '9', label: 'September' },
+        { value: '10', label: 'October' },
+        { value: '11', label: 'November' },
+        { value: '12', label: 'December' }
+      ];
 
       // Build query for all events
       let query = db("event_occurrences")
@@ -89,9 +126,16 @@ router.get("/", async (req, res) => {
         countQuery = countQuery.where("event_templates.event_type", eventType);
       }
 
-      if (eventMonth) {
-        query = query.whereRaw("TO_CHAR(event_occurrences.event_datetime_start::timestamp, 'YYYY-MM') = ?", [eventMonth]);
-        countQuery = countQuery.whereRaw("TO_CHAR(event_occurrences.event_datetime_start::timestamp, 'YYYY-MM') = ?", [eventMonth]);
+      // Apply year filter
+      if (filterYear) {
+        query = query.whereRaw("EXTRACT(YEAR FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterYear]);
+        countQuery = countQuery.whereRaw("EXTRACT(YEAR FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterYear]);
+      }
+
+      // Apply month filter
+      if (filterMonth) {
+        query = query.whereRaw("EXTRACT(MONTH FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterMonth]);
+        countQuery = countQuery.whereRaw("EXTRACT(MONTH FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterMonth]);
       }
 
       // Ordering
@@ -109,12 +153,14 @@ router.get("/", async (req, res) => {
         events,
         isManager: true,
         filter,
-        eventName,
         eventType,
-        eventMonth,
+        eventName,
+        filterYear,
+        filterMonth,
         eventTemplates,
         eventTypes: eventTypes.map(t => t.event_type),
-        eventMonths: monthsQuery,
+        availableYears: availableYears.map(y => y.year),
+        months,
         currentPage: page,
         totalPages,
         totalEvents: parseInt(count)
@@ -184,29 +230,55 @@ router.get("/", async (req, res) => {
 // ============================================
 router.get("/browse", async (req, res) => {
   try {
-    const eventName = req.query.name || "";
     const eventType = req.query.type || "";
-    const eventMonth = req.query.month || "";
+    const eventName = req.query.name || "";
+    const filterYear = req.query.year || "";
+    const filterMonth = req.query.month || "";
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
     const now = new Date();
     const participantId = req.session.user.participant_id;
 
-    // Get filter options
-    const eventTemplates = await db("event_templates")
-      .select("template_id", "event_name")
-      .orderBy("event_name");
-
+    // Get all event types
     const eventTypes = await db("event_templates")
       .distinct("event_type")
       .whereNotNull("event_type")
       .orderBy("event_type");
 
-    const monthsQuery = await db("event_occurrences")
-      .select(db.raw("DISTINCT TO_CHAR(event_datetime_start::timestamp, 'YYYY-MM') as month_value, TO_CHAR(event_datetime_start::timestamp, 'Mon YYYY') as month_label"))
+    // Get event templates - filtered by type if selected (cascading filter)
+    let eventTemplatesQuery = db("event_templates")
+      .select("template_id", "event_name", "event_type")
+      .orderBy("event_name");
+    
+    if (eventType) {
+      eventTemplatesQuery = eventTemplatesQuery.where("event_type", eventType);
+    }
+    
+    const eventTemplates = await eventTemplatesQuery;
+
+    // Get available years from future events
+    const availableYears = await db("event_occurrences")
+      .select(db.raw("DISTINCT EXTRACT(YEAR FROM event_datetime_start::timestamp) as year"))
       .where("event_datetime_start", ">=", now)
-      .orderBy("month_value", "asc");
+      .whereNotNull("event_datetime_start")
+      .orderBy("year", "asc");
+
+    // Month options
+    const months = [
+      { value: '1', label: 'January' },
+      { value: '2', label: 'February' },
+      { value: '3', label: 'March' },
+      { value: '4', label: 'April' },
+      { value: '5', label: 'May' },
+      { value: '6', label: 'June' },
+      { value: '7', label: 'July' },
+      { value: '8', label: 'August' },
+      { value: '9', label: 'September' },
+      { value: '10', label: 'October' },
+      { value: '11', label: 'November' },
+      { value: '12', label: 'December' }
+    ];
 
     // Get user's already registered event IDs
     const registeredEvents = await db("registrations")
@@ -242,19 +314,26 @@ router.get("/browse", async (req, res) => {
     }
 
     // Apply filters
-    if (eventName) {
-      query = query.where("event_templates.template_id", eventName);
-      countQuery = countQuery.where("event_templates.template_id", eventName);
-    }
-
     if (eventType) {
       query = query.where("event_templates.event_type", eventType);
       countQuery = countQuery.where("event_templates.event_type", eventType);
     }
 
-    if (eventMonth) {
-      query = query.whereRaw("TO_CHAR(event_occurrences.event_datetime_start::timestamp, 'YYYY-MM') = ?", [eventMonth]);
-      countQuery = countQuery.whereRaw("TO_CHAR(event_occurrences.event_datetime_start::timestamp, 'YYYY-MM') = ?", [eventMonth]);
+    if (eventName) {
+      query = query.where("event_templates.template_id", eventName);
+      countQuery = countQuery.where("event_templates.template_id", eventName);
+    }
+
+    // Apply year filter
+    if (filterYear) {
+      query = query.whereRaw("EXTRACT(YEAR FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterYear]);
+      countQuery = countQuery.whereRaw("EXTRACT(YEAR FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterYear]);
+    }
+
+    // Apply month filter
+    if (filterMonth) {
+      query = query.whereRaw("EXTRACT(MONTH FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterMonth]);
+      countQuery = countQuery.whereRaw("EXTRACT(MONTH FROM event_occurrences.event_datetime_start::timestamp) = ?", [filterMonth]);
     }
 
     query = query.orderBy("event_occurrences.event_datetime_start", "asc");
@@ -266,12 +345,14 @@ router.get("/browse", async (req, res) => {
     res.render("events/browse", {
       events,
       isManager: isManager(req),
-      eventName,
       eventType,
-      eventMonth,
+      eventName,
+      filterYear,
+      filterMonth,
       eventTemplates,
       eventTypes: eventTypes.map(t => t.event_type),
-      eventMonths: monthsQuery,
+      availableYears: availableYears.map(y => y.year),
+      months,
       currentPage: page,
       totalPages,
       totalEvents: parseInt(count),
@@ -369,11 +450,11 @@ router.post("/add", async (req, res) => {
 
     await db("event_occurrences").insert({
       template_id,
-      event_datetime_start,
-      event_datetime_end,
+      event_datetime_start: normalizeDateTime(event_datetime_start),
+      event_datetime_end: normalizeDateTime(event_datetime_end),
       event_location,
       event_capacity: parseInt(event_capacity),
-      event_registration_deadline
+      event_registration_deadline: normalizeDateTime(event_registration_deadline)
     });
 
     res.redirect("/events");
@@ -424,11 +505,11 @@ router.post("/edit/:id", async (req, res) => {
       .where({ occurrence_id: req.params.id })
       .update({
         template_id,
-        event_datetime_start,
-        event_datetime_end,
+        event_datetime_start: normalizeDateTime(event_datetime_start),
+        event_datetime_end: normalizeDateTime(event_datetime_end),
         event_location,
         event_capacity: parseInt(event_capacity),
-        event_registration_deadline
+        event_registration_deadline: normalizeDateTime(event_registration_deadline)
       });
 
     res.redirect("/events");
