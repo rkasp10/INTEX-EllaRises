@@ -1,18 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const knex = require("knex");
-
-// Database connection
-const db = knex({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-  },
-});
+const db = require("../db"); // Shared database connection
 
 function isManager(req) {
   return req.session.user && req.session.user.level === "M";
@@ -55,31 +43,61 @@ router.post("/donate", async (req, res) => {
 });
 
 // ============================================
-// DONATIONS LIST (Manager only)
+// DONATIONS LIST
+// - Managers: Full view with all details + CRUD
+// - Participants: Simplified view (names & dates only) with pagination
 // ============================================
 router.get("/", async (req, res) => {
-  if (!isManager(req)) {
-    return res.status(403).send("Access denied. Managers only.");
-  }
-
   try {
-    const donations = await db("donations")
-      .select(
-        "donations.*",
-        "participants.participant_first_name",
-        "participants.participant_last_name",
-        "participants.participant_email"
-      )
-      .leftJoin("participants", "donations.participant_id", "participants.participant_id")
-      .orderBy("donations.donation_date", "desc");
+    if (isManager(req)) {
+      // MANAGER VIEW: Full details
+      const donations = await db("donations")
+        .select(
+          "donations.*",
+          "participants.participant_first_name",
+          "participants.participant_last_name",
+          "participants.participant_email"
+        )
+        .leftJoin("participants", "donations.participant_id", "participants.participant_id")
+        .orderByRaw("CASE WHEN donations.donation_date IS NULL THEN 1 ELSE 0 END, donations.donation_date DESC");
 
-    const totalDonations = donations.reduce((sum, d) => sum + parseFloat(d.donation_amount || 0), 0);
+      const totalDonations = donations.reduce((sum, d) => sum + parseFloat(d.donation_amount || 0), 0);
 
-    res.render("donations/index", {
-      donations,
-      totalDonations,
-      isManager: true
-    });
+      res.render("donations/index", {
+        donations,
+        totalDonations,
+        isManager: true
+      });
+    } else {
+      // PARTICIPANT VIEW: Show unique supporters (not individual donations)
+      const page = parseInt(req.query.page) || 1;
+      const limit = 20; // 20 per page
+      const offset = (page - 1) * limit;
+
+      // Get unique supporters with their most recent donation date
+      const supporters = await db("donations")
+        .select(
+          "participants.participant_first_name",
+          "participants.participant_last_name"
+        )
+        .max("donations.donation_date as latest_donation")
+        .leftJoin("participants", "donations.participant_id", "participants.participant_id")
+        .groupBy("participants.participant_id", "participants.participant_first_name", "participants.participant_last_name")
+        .orderByRaw("MAX(donations.donation_date) DESC NULLS LAST");
+
+      // Manual pagination on the grouped results
+      const totalSupporters = supporters.length;
+      const totalPages = Math.ceil(totalSupporters / limit);
+      const paginatedSupporters = supporters.slice(offset, offset + limit);
+
+      res.render("donations/supporters", {
+        donations: paginatedSupporters,
+        isManager: false,
+        currentPage: page,
+        totalPages,
+        totalDonations: totalSupporters
+      });
+    }
   } catch (err) {
     console.error("Error loading donations:", err);
     res.send("Error loading donations: " + err.message);

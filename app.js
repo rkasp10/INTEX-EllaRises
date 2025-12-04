@@ -1,8 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const knex = require("knex");
 const path = require("path");
 const session = require("express-session");
+const helmet = require("helmet"); // Security middleware
+const db = require("./db"); // Shared database connection
 
 const app = express();
 const port = 3000;
@@ -10,6 +11,9 @@ const port = 3000;
 // ---------------------------------------------
 // Middleware
 // ---------------------------------------------
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for development (allows inline scripts/styles)
+}));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
@@ -24,20 +28,6 @@ app.use(
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   next();
-});
-
-// ---------------------------------------------
-// Database connection
-// ---------------------------------------------
-const db = knex({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-  },
 });
 
 // ---------------------------------------------
@@ -396,6 +386,80 @@ app.get("/dev/table/:tableName", async (req, res) => {
   } catch (err) {
     res.send(`<h1>Error</h1><p>${err.message}</p><a href="/dev/test-db">Back</a>`);
   }
+});
+
+// ---------------------------------------------
+// HTTP 418 - I'm a teapot (IS 404 requirement)
+// ---------------------------------------------
+app.get("/teapot", (req, res) => {
+  res.status(418).send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>418 - I'm a Teapot</title>
+      <link rel="stylesheet" href="/css/style.css">
+      <style>
+        .teapot-container {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: linear-gradient(135deg, var(--pink-light) 0%, var(--cream) 100%);
+          text-align: center;
+          padding: 20px;
+        }
+        .teapot-icon {
+          font-size: 8rem;
+          margin-bottom: 20px;
+        }
+        .teapot-title {
+          font-family: var(--font-display);
+          font-size: 3rem;
+          color: var(--green-dark);
+          margin: 0 0 10px 0;
+        }
+        .teapot-code {
+          font-size: 1.2rem;
+          color: #888;
+          margin-bottom: 20px;
+        }
+        .teapot-message {
+          font-size: 1.1rem;
+          color: #666;
+          max-width: 400px;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+        .teapot-link {
+          display: inline-block;
+          padding: 12px 30px;
+          background-color: var(--sage);
+          color: white;
+          text-decoration: none;
+          border-radius: 25px;
+          font-weight: 600;
+          transition: background-color 0.2s;
+        }
+        .teapot-link:hover {
+          background-color: var(--green-dark);
+        }
+      </style>
+    </head>
+    <body>
+      <div class="teapot-container">
+        <div class="teapot-icon">🫖</div>
+        <h1 class="teapot-title">I'm a Teapot</h1>
+        <p class="teapot-code">HTTP 418</p>
+        <p class="teapot-message">
+          The server refuses to brew coffee because it is, permanently, a teapot. 
+          This error is a reference to Hyper Text Coffee Pot Control Protocol defined in RFC 2324.
+        </p>
+        <a href="/" class="teapot-link">Return Home</a>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
 // ---------------------------------------------

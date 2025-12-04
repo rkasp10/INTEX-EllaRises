@@ -1,18 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const knex = require("knex");
-
-// Database connection (import from app or create here)
-const db = knex({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-  },
-});
+const db = require("../db"); // Shared database connection
 
 // Helper: Check if user is manager
 function isManager(req) {

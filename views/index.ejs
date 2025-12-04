@@ -55,96 +55,132 @@
         </div>
         
         <div class="nav-hub">
-            <a href="/participants" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--pink-light);">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Participants</span>
-                    <span class="nav-hub-desc">
-                        <% if (currentUser.level === 'M') { %>
-                            View & manage all participants
-                        <% } else { %>
-                            View your profile
-                        <% } %>
-                    </span>
-                </div>
-            </a>
-
-            <a href="/events" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--blue);">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Events</span>
-                    <span class="nav-hub-desc">
-                        <% if (currentUser.level === 'M') { %>
-                            Manage workshops & activities
-                        <% } else { %>
-                            Browse upcoming events
-                        <% } %>
-                    </span>
-                </div>
-            </a>
-
-            <a href="/surveys" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--peach);">
-                    <i class="fas fa-clipboard-list"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Surveys</span>
-                    <span class="nav-hub-desc">
-                        <% if (currentUser.level === 'M') { %>
-                            View all survey responses
-                        <% } else { %>
-                            Complete your surveys
-                        <% } %>
-                    </span>
-                </div>
-            </a>
-
-            <a href="/milestones" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--sage);">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Milestones</span>
-                    <span class="nav-hub-desc">
-                        <% if (currentUser.level === 'M') { %>
-                            Manage participant milestones
-                        <% } else { %>
-                            Track your achievements
-                        <% } %>
-                    </span>
-                </div>
-            </a>
-
-            <a href="/donations" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--pink-mid);">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Donations</span>
-                    <span class="nav-hub-desc">
-                        <% if (currentUser.level === 'M') { %>
-                            View donation records
-                        <% } else { %>
-                            See supporter contributions
-                        <% } %>
-                    </span>
-                </div>
-            </a>
-
             <% if (currentUser.level === 'M') { %>
-            <a href="/users" class="nav-hub-card">
-                <div class="nav-hub-icon-wrap" style="background-color: var(--purple);">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <div class="nav-hub-text">
-                    <span class="nav-hub-label">Users</span>
-                    <span class="nav-hub-desc">Manage system accounts</span>
-                </div>
-            </a>
+                <!-- MANAGER VIEW -->
+                <a href="/participants" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-light);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Participants</span>
+                        <span class="nav-hub-desc">View & manage all participants</span>
+                    </div>
+                </a>
+
+                <a href="/events" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--blue);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Events</span>
+                        <span class="nav-hub-desc">Manage workshops & activities</span>
+                    </div>
+                </a>
+
+                <a href="/surveys" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--peach);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Surveys</span>
+                        <span class="nav-hub-desc">View all survey responses</span>
+                    </div>
+                </a>
+
+                <a href="/milestones" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--sage);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Milestones</span>
+                        <span class="nav-hub-desc">Manage participant milestones</span>
+                    </div>
+                </a>
+
+                <a href="/donations" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-mid);">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Donations</span>
+                        <span class="nav-hub-desc">View donation records</span>
+                    </div>
+                </a>
+
+                <a href="/users" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--purple);">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Users</span>
+                        <span class="nav-hub-desc">Manage system accounts</span>
+                    </div>
+                </a>
+
+            <% } else { %>
+                <!-- PARTICIPANT VIEW -->
+                <!-- Row 1 -->
+                <a href="/participants" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-light);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Profile</span>
+                        <span class="nav-hub-desc">View your profile</span>
+                    </div>
+                </a>
+
+                <a href="/events" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--blue);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">My Events</span>
+                        <span class="nav-hub-desc">View your registered events</span>
+                    </div>
+                </a>
+
+                <!-- Row 2 -->
+                <a href="/surveys" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--peach);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Surveys</span>
+                        <span class="nav-hub-desc">Complete your surveys</span>
+                    </div>
+                </a>
+
+                <a href="/events/browse" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--sage);">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Browse Events</span>
+                        <span class="nav-hub-desc">Find & register for events</span>
+                    </div>
+                </a>
+
+                <!-- Row 3 -->
+                <a href="/donations" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-mid);">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Donations</span>
+                        <span class="nav-hub-desc">See our generous supporters</span>
+                    </div>
+                </a>
+
+                <a href="/milestones" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--purple);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Milestones</span>
+                        <span class="nav-hub-desc">Track your achievements</span>
+                    </div>
+                </a>
             <% } %>
         </div>
     </main>

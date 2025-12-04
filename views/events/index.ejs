@@ -3,6 +3,7 @@
 <head>
     <title>Events - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .filters-container {
             background: white;
@@ -328,7 +329,7 @@
                             <div class="event-meta">
                                 <span>📍 <%= event.event_location %></span>
                                 <span>🕐 <%= new Date(event.event_datetime_start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) %></span>
-                                <span>👥 <%= event.event_capacity %> spots</span>
+                                <span><i class="fas fa-users"></i> <%= event.event_capacity %> spots</span>
                             </div>
                         </div>
                         <div class="event-actions-row">
