@@ -19,8 +19,9 @@ router.get("/", async (req, res) => {
       const eventName = req.query.name || "";
       const filterYear = req.query.year || "";
       const filterMonth = req.query.month || "";
+      const sortBy = req.query.sort || "date_desc"; // default: newest first
       const page = parseInt(req.query.page) || 1;
-      const limit = 10;
+      const limit = 12;
       const offset = (page - 1) * limit;
 
       // Get filter options
@@ -119,9 +120,17 @@ router.get("/", async (req, res) => {
       const [{ count }] = await countQuery.count("surveys.survey_id as count");
       const totalPages = Math.ceil(count / limit);
 
+      // Apply sort order
+      if (sortBy === "score_asc") {
+        query = query.orderBy("surveys.survey_overall_score", "asc");
+      } else if (sortBy === "score_desc") {
+        query = query.orderBy("surveys.survey_overall_score", "desc");
+      } else {
+        query = query.orderBy("surveys.survey_submission_date", "desc");
+      }
+
       // Get paginated results
       const surveys = await query
-        .orderBy("surveys.survey_submission_date", "desc")
         .limit(limit)
         .offset(offset);
 
@@ -165,6 +174,7 @@ router.get("/", async (req, res) => {
         eventName,
         filterYear,
         filterMonth,
+        sortBy,
         eventTypes: eventTypes.map(t => t.event_type),
         eventTemplates,
         availableYears: availableYears.map(y => y.year),

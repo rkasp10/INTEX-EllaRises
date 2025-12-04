@@ -15,15 +15,36 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // MANAGER VIEW: Show all participants with pagination
+      // MANAGER VIEW: Show all participants with pagination and search
       const page = parseInt(req.query.page) || 1;
-      const limit = 10;
+      const search = req.query.search || "";
+      const limit = 12;
       const offset = (page - 1) * limit;
 
-      const [{ count }] = await db("participants").count("participant_id as count");
+      // Build query with optional search
+      let query = db("participants");
+      let countQuery = db("participants");
+
+      if (search) {
+        const searchPattern = `%${search}%`;
+        query = query.where(function() {
+          this.whereRaw("LOWER(participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_email) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_city) LIKE LOWER(?)", [searchPattern]);
+        });
+        countQuery = countQuery.where(function() {
+          this.whereRaw("LOWER(participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_email) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participant_city) LIKE LOWER(?)", [searchPattern]);
+        });
+      }
+
+      const [{ count }] = await countQuery.count("participant_id as count");
       const totalPages = Math.ceil(count / limit);
 
-      const participants = await db("participants")
+      const participants = await query
         .select("*")
         .orderBy("participant_last_name")
         .limit(limit)
@@ -34,7 +55,8 @@ router.get("/", async (req, res) => {
         isManager: true,
         currentPage: page,
         totalPages,
-        totalItems: parseInt(count)
+        totalItems: parseInt(count),
+        search
       });
     } else {
       // USER VIEW: Show only their own profile
@@ -126,7 +148,11 @@ router.post("/edit/:id", async (req, res) => {
   }
   
   try {
-    const { participant_first_name, participant_last_name, participant_email, participant_dob, participant_phone, participant_city, participant_state, participant_zip } = req.body;
+    const { 
+      participant_first_name, participant_last_name, participant_email, 
+      participant_dob, participant_phone, participant_city, participant_state, participant_zip,
+      participant_school_or_employer, participant_field_of_interest, participant_role
+    } = req.body;
     
     await db("participants")
       .where({ participant_id: req.params.id })
@@ -134,11 +160,14 @@ router.post("/edit/:id", async (req, res) => {
         participant_first_name,
         participant_last_name,
         participant_email,
-        participant_dob,
-        participant_phone,
-        participant_city,
-        participant_state,
-        participant_zip
+        participant_dob: participant_dob || null,
+        participant_phone: participant_phone || null,
+        participant_city: participant_city || null,
+        participant_state: participant_state || null,
+        participant_zip: participant_zip || null,
+        participant_school_or_employer: participant_school_or_employer || null,
+        participant_field_of_interest: participant_field_of_interest || null,
+        participant_role: participant_role || null
       });
     
     res.redirect("/participants");

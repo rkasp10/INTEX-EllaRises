@@ -8,12 +8,13 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>Edit Participant</h1>
-        </div>
+        <div class="form-page-wrapper">
+            <div class="page-header">
+                <h1>Edit Participant</h1>
+            </div>
 
-        <div class="form-card">
-            <form action="/participants/edit/<%= participant.participant_id %>" method="POST" class="crud-form">
+            <div class="form-card">
+                <form action="/participants/edit/<%= participant.participant_id %>" method="POST" class="crud-form">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="participant_first_name">First Name</label>
@@ -56,11 +57,36 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="participant_school_or_employer">School or Employer</label>
+                    <input type="text" id="participant_school_or_employer" name="participant_school_or_employer" value="<%= participant.participant_school_or_employer || '' %>">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="participant_field_of_interest">Field of Interest</label>
+                        <select id="participant_field_of_interest" name="participant_field_of_interest">
+                            <option value="">Select...</option>
+                            <option value="STEM" <%= participant.participant_field_of_interest === 'STEM' ? 'selected' : '' %>>STEM</option>
+                            <option value="Arts" <%= participant.participant_field_of_interest === 'Arts' ? 'selected' : '' %>>Arts</option>
+                            <option value="Both" <%= participant.participant_field_of_interest === 'Both' ? 'selected' : '' %>>Both</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="participant_role">Role</label>
+                        <select id="participant_role" name="participant_role">
+                            <option value="participant" <%= (!participant.participant_role || participant.participant_role === 'participant') ? 'selected' : '' %>>Participant</option>
+                            <option value="admin" <%= participant.participant_role === 'admin' ? 'selected' : '' %>>Admin</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-actions">
                     <a href="/participants" class="btn-cancel">Cancel</a>
                     <button type="submit" class="btn-submit">Save Changes</button>
                 </div>
             </form>
+            </div>
         </div>
     </main>
 

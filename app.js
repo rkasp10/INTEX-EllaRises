@@ -260,7 +260,7 @@ app.post("/register/complete", async (req, res) => {
     
     let errorMessage = "Registration failed. Please try again.";
     if (err.message && err.message.includes("value too long")) {
-      errorMessage = "One of your entries is too long. Please shorten School/Employer and Field of Interest to 19 characters or less.";
+      errorMessage = "One of your entries exceeds the database character limit. Please try shorter values.";
     }
     
     res.render("register-details", {
@@ -392,6 +392,13 @@ app.get("/dev/table/:tableName", async (req, res) => {
   } catch (err) {
     res.send(`<h1>Error</h1><p>${err.message}</p><a href="/dev/test-db">Back</a>`);
   }
+});
+
+// ---------------------------------------------
+// ANALYTICS DASHBOARD (Manager only)
+// ---------------------------------------------
+app.get("/analytics", requireLogin, requireManager, (req, res) => {
+  res.render("analytics", { currentUser: req.session.user });
 });
 
 // ---------------------------------------------

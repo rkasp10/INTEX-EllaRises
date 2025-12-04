@@ -14,26 +14,47 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // MANAGER VIEW: Full details with pagination
+      // MANAGER VIEW: Full details with pagination and search
       const page = parseInt(req.query.page) || 1;
-      const limit = 10;
+      const search = req.query.search || "";
+      const limit = 12;
       const offset = (page - 1) * limit;
 
-      const [{ count }] = await db("donations").count("donation_id as count");
-      const totalPages = Math.ceil(count / limit);
-
-      // Get total donation amount (all donations, not just current page)
-      const [{ total }] = await db("donations").sum("donation_amount as total");
-      const totalDonationAmount = parseFloat(total || 0);
-
-      const donations = await db("donations")
+      // Build query with optional search
+      let query = db("donations")
         .select(
           "donations.*",
           "participants.participant_first_name",
           "participants.participant_last_name",
           "participants.participant_email"
         )
-        .leftJoin("participants", "donations.participant_id", "participants.participant_id")
+        .leftJoin("participants", "donations.participant_id", "participants.participant_id");
+      
+      let countQuery = db("donations")
+        .leftJoin("participants", "donations.participant_id", "participants.participant_id");
+
+      if (search) {
+        const searchPattern = `%${search}%`;
+        query = query.where(function() {
+          this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_email) LIKE LOWER(?)", [searchPattern]);
+        });
+        countQuery = countQuery.where(function() {
+          this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_email) LIKE LOWER(?)", [searchPattern]);
+        });
+      }
+
+      const [{ count }] = await countQuery.count("donations.donation_id as count");
+      const totalPages = Math.ceil(count / limit);
+
+      // Get total donation amount (all donations, not just current page)
+      const [{ total }] = await db("donations").sum("donation_amount as total");
+      const totalDonationAmount = parseFloat(total || 0);
+
+      const donations = await query
         .orderByRaw("CASE WHEN donations.donation_date IS NULL THEN 1 ELSE 0 END, donations.donation_date DESC")
         .limit(limit)
         .offset(offset);
@@ -44,7 +65,8 @@ router.get("/", async (req, res) => {
         isManager: true,
         currentPage: page,
         totalPages,
-        totalItems: parseInt(count)
+        totalItems: parseInt(count),
+        search
       });
     } else {
       // PARTICIPANT VIEW: Show their own donations + supporters list

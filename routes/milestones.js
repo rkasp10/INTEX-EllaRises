@@ -14,21 +14,41 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // Manager sees all milestones with participant info (paginated)
+      // Manager sees all milestones with participant info (paginated + search)
       const page = parseInt(req.query.page) || 1;
-      const limit = 10;
+      const search = req.query.search || "";
+      const limit = 12;
       const offset = (page - 1) * limit;
 
-      const [{ count }] = await db("milestones").count("milestone_id as count");
-      const totalPages = Math.ceil(count / limit);
-
-      const milestones = await db("milestones")
+      let query = db("milestones")
         .select(
           "milestones.*",
           "participants.participant_first_name",
           "participants.participant_last_name"
         )
-        .leftJoin("participants", "milestones.participant_id", "participants.participant_id")
+        .leftJoin("participants", "milestones.participant_id", "participants.participant_id");
+      
+      let countQuery = db("milestones")
+        .leftJoin("participants", "milestones.participant_id", "participants.participant_id");
+
+      if (search) {
+        const searchPattern = `%${search}%`;
+        query = query.where(function() {
+          this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(milestones.milestone_type) LIKE LOWER(?)", [searchPattern]);
+        });
+        countQuery = countQuery.where(function() {
+          this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(milestones.milestone_type) LIKE LOWER(?)", [searchPattern]);
+        });
+      }
+
+      const [{ count }] = await countQuery.count("milestones.milestone_id as count");
+      const totalPages = Math.ceil(count / limit);
+
+      const milestones = await query
         .orderBy("milestones.milestone_date", "desc")
         .limit(limit)
         .offset(offset);
@@ -38,7 +58,8 @@ router.get("/", async (req, res) => {
         isManager: true,
         currentPage: page,
         totalPages,
-        totalItems: parseInt(count)
+        totalItems: parseInt(count),
+        search
       });
     } else {
       // User sees their own milestones

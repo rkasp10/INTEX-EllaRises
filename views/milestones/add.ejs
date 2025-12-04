@@ -8,11 +8,12 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>Add Milestone</h1>
-        </div>
+        <div class="form-page-wrapper">
+            <div class="page-header">
+                <h1>Add Milestone</h1>
+            </div>
 
-        <div class="form-card">
+            <div class="form-card">
             <form action="/milestones/add" method="POST" class="crud-form">
                 <div class="form-group">
                     <label for="participant_id">Participant</label>
@@ -40,7 +41,8 @@
                     <a href="/milestones" class="btn-cancel">Cancel</a>
                     <button type="submit" class="btn-submit">Create Milestone</button>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </main>
 
