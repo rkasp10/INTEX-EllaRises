@@ -3,6 +3,7 @@
 <head>
     <title>My Surveys - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -26,7 +27,10 @@
             <% }) %>
         <% } else { %>
             <div class="empty-state">
-                <p>🎉 You're all caught up! No pending surveys.</p>
+                <div class="empty-state-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <p>You're all caught up! No pending surveys.</p>
             </div>
         <% } %>
 

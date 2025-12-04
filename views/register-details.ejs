@@ -41,32 +41,32 @@
 
         <div class="form-group">
           <label for="participant_phone">Phone Number</label>
-          <input type="tel" id="participant_phone" name="participant_phone" placeholder="801-555-1234">
+          <input type="tel" id="participant_phone" name="participant_phone" placeholder="801-555-1234" maxlength="19">
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="participant_city">City</label>
-            <input type="text" id="participant_city" name="participant_city">
+            <input type="text" id="participant_city" name="participant_city" maxlength="50">
           </div>
           <div class="form-group">
             <label for="participant_state">State</label>
-            <input type="text" id="participant_state" name="participant_state" placeholder="UT">
+            <input type="text" id="participant_state" name="participant_state" placeholder="UT" maxlength="2">
           </div>
           <div class="form-group">
             <label for="participant_zip">Zip Code</label>
-            <input type="text" id="participant_zip" name="participant_zip">
+            <input type="text" id="participant_zip" name="participant_zip" maxlength="10">
           </div>
         </div>
 
         <div class="form-group">
-          <label for="participant_school_or_employer">School or Employer</label>
-          <input type="text" id="participant_school_or_employer" name="participant_school_or_employer">
+          <label for="participant_school_or_employer">School or Employer <span class="field-hint">(max 19 chars)</span></label>
+          <input type="text" id="participant_school_or_employer" name="participant_school_or_employer" maxlength="19">
         </div>
 
         <div class="form-group">
-          <label for="participant_field_of_interest">Field of Interest</label>
-          <input type="text" id="participant_field_of_interest" name="participant_field_of_interest" placeholder="e.g., Science, Art, Technology">
+          <label for="participant_field_of_interest">Field of Interest <span class="field-hint">(max 19 chars)</span></label>
+          <input type="text" id="participant_field_of_interest" name="participant_field_of_interest" placeholder="e.g., Science, Art" maxlength="19">
         </div>
 
         <div class="form-actions">

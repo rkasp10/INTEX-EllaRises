@@ -3,6 +3,7 @@
 <head>
     <title>Donations - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -21,13 +22,20 @@
             </div>
         </div>
 
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Search by donor name or email..." onkeyup="filterTable()">
+            <span class="search-count"><span id="visibleCount"><%= donations.length %></span> of <%= donations.length %> donations</span>
+        </div>
+
         <% if (donations.length === 0) { %>
             <div class="empty-state">
                 <p>No donations recorded yet.</p>
             </div>
         <% } else { %>
             <div class="table-wrapper">
-                <table class="data-table">
+                <table class="data-table" id="donationsTable">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -59,5 +67,36 @@
     </main>
 
     <%- include('../partials/footer') %>
+
+    <script>
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('donationsTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                
+                // Search in donor name and email columns (1, 2)
+                for (let j of [1, 2]) {
+                    if (cells[j]) {
+                        const text = cells[j].textContent || cells[j].innerText;
+                        if (text.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                rows[i].style.display = found ? '' : 'none';
+                if (found) visibleCount++;
+            }
+
+            document.getElementById('visibleCount').textContent = visibleCount;
+        }
+    </script>
 </body>
 </html>

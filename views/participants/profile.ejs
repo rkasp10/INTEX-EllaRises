@@ -3,6 +3,7 @@
 <head>
     <title>My Profile - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -57,15 +58,21 @@
                 <h3>Quick Links</h3>
                 <div class="profile-links-grid">
                     <a href="/events" class="profile-link-card">
-                        <span class="link-icon">📅</span>
+                        <div class="link-icon-wrap" style="background-color: var(--blue);">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
                         <span class="link-text">View Events</span>
                     </a>
                     <a href="/surveys" class="profile-link-card">
-                        <span class="link-icon">📝</span>
+                        <div class="link-icon-wrap" style="background-color: var(--peach);">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
                         <span class="link-text">My Surveys</span>
                     </a>
                     <a href="/milestones" class="profile-link-card">
-                        <span class="link-icon">🏆</span>
+                        <div class="link-icon-wrap" style="background-color: var(--sage);">
+                            <i class="fas fa-trophy"></i>
+                        </div>
                         <span class="link-text">My Milestones</span>
                     </a>
                 </div>

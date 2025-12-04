@@ -3,6 +3,7 @@
 <head>
     <title>My Events - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .filters-container {
             background: white;
@@ -225,6 +226,28 @@
             background: var(--green-dark);
             transform: translateY(-2px);
         }
+        
+        .search-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-left: 15px;
+        }
+        .search-inline i {
+            color: #999;
+        }
+        .search-inline input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.9rem;
+            width: 150px;
+            padding: 0;
+            margin: 0;
+        }
     </style>
 </head>
 <body class="dashboard-body">
@@ -251,6 +274,10 @@
                 <div class="filter-toggle">
                     <a href="/events?filter=future" class="<%= filter !== 'past' ? 'active' : '' %>">Upcoming</a>
                     <a href="/events?filter=past" class="<%= filter === 'past' ? 'active' : '' %>">Past</a>
+                </div>
+                <div class="search-inline">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="eventSearch" placeholder="Search events..." onkeyup="filterEvents()">
                 </div>
                 <span class="filter-info">Showing <%= events.length %> of <%= totalEvents %> events</span>
             </div>
@@ -319,6 +346,24 @@
     </main>
 
     <%- include('../partials/footer') %>
+
+    <script>
+        function filterEvents() {
+            const input = document.getElementById('eventSearch');
+            const filter = input.value.toLowerCase();
+            const rows = document.querySelectorAll('.event-row');
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.event-info h3').textContent.toLowerCase();
+                const location = row.querySelector('.event-meta').textContent.toLowerCase();
+                if (name.indexOf(filter) > -1 || location.indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 

@@ -3,6 +3,7 @@
 <head>
     <title>My Milestones - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -21,7 +22,9 @@
             <div class="milestones-grid">
                 <% milestones.forEach(milestone => { %>
                     <div class="milestone-card achieved">
-                        <div class="milestone-icon-large">🏆</div>
+                        <div class="milestone-icon-wrap">
+                            <i class="fas fa-trophy"></i>
+                        </div>
                         <h3><%= milestone.milestone_title %></h3>
                         <span class="milestone-date">Achieved <%= milestone.milestone_date ? new Date(milestone.milestone_date).toLocaleDateString() : '' %></span>
                     </div>

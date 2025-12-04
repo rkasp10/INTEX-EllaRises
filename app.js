@@ -1,8 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const knex = require("knex");
 const path = require("path");
 const session = require("express-session");
+const helmet = require("helmet"); // Security middleware
+const db = require("./db"); // Shared database connection
 
 const app = express();
 const port = 3000;
@@ -10,6 +11,9 @@ const port = 3000;
 // ---------------------------------------------
 // Middleware
 // ---------------------------------------------
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for development (allows inline scripts/styles)
+}));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
@@ -24,20 +28,6 @@ app.use(
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   next();
-});
-
-// ---------------------------------------------
-// Database connection
-// ---------------------------------------------
-const db = knex({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-  },
 });
 
 // ---------------------------------------------
@@ -90,7 +80,7 @@ app.get("/login", (req, res) => {
   if (req.session.user) {
     return res.redirect("/");
   }
-  res.render("login");
+  res.render("login", { error: req.query.error });
 });
 
 app.post("/login", async (req, res) => {
@@ -117,12 +107,12 @@ app.post("/login", async (req, res) => {
     console.log("User found in DB:", user);
 
     if (!user) {
-      return res.send("Invalid username or password (user not found)");
+      return res.redirect("/login?error=invalid");
     }
 
     // TODO: Replace this with bcrypt later
     if (user.password !== password) {
-      return res.send("Invalid username or password");
+      return res.redirect("/login?error=invalid");
     }
 
     // Check participant_role to determine if admin or participant
@@ -267,9 +257,15 @@ app.post("/register/complete", async (req, res) => {
     res.redirect("/");
   } catch (err) {
     console.error("Complete registration error:", err);
+    
+    let errorMessage = "Registration failed. Please try again.";
+    if (err.message && err.message.includes("value too long")) {
+      errorMessage = "One of your entries is too long. Please shorten School/Employer and Field of Interest to 19 characters or less.";
+    }
+    
     res.render("register-details", {
       username, email, password,
-      error: "Registration failed. Please try again."
+      error: errorMessage
     });
   }
 });
@@ -395,6 +391,137 @@ app.get("/dev/table/:tableName", async (req, res) => {
     `);
   } catch (err) {
     res.send(`<h1>Error</h1><p>${err.message}</p><a href="/dev/test-db">Back</a>`);
+  }
+});
+
+// ---------------------------------------------
+// HTTP 418 - I'm a teapot (IS 404 requirement)
+// ---------------------------------------------
+app.get("/teapot", (req, res) => {
+  res.status(418).send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>418 - I'm a Teapot</title>
+      <link rel="stylesheet" href="/css/style.css">
+      <style>
+        .teapot-container {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: linear-gradient(135deg, var(--pink-light) 0%, var(--cream) 100%);
+          text-align: center;
+          padding: 20px;
+        }
+        .teapot-icon {
+          font-size: 8rem;
+          margin-bottom: 20px;
+        }
+        .teapot-title {
+          font-family: var(--font-display);
+          font-size: 3rem;
+          color: var(--green-dark);
+          margin: 0 0 10px 0;
+        }
+        .teapot-code {
+          font-size: 1.2rem;
+          color: #888;
+          margin-bottom: 20px;
+        }
+        .teapot-message {
+          font-size: 1.1rem;
+          color: #666;
+          max-width: 400px;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+        .teapot-link {
+          display: inline-block;
+          padding: 12px 30px;
+          background-color: var(--sage);
+          color: white;
+          text-decoration: none;
+          border-radius: 25px;
+          font-weight: 600;
+          transition: background-color 0.2s;
+        }
+        .teapot-link:hover {
+          background-color: var(--green-dark);
+        }
+      </style>
+    </head>
+    <body>
+      <div class="teapot-container">
+        <div class="teapot-icon">🫖</div>
+        <h1 class="teapot-title">I'm a Teapot</h1>
+        <p class="teapot-code">HTTP 418</p>
+        <p class="teapot-message">
+          The server refuses to brew coffee because it is, permanently, a teapot. 
+          This error is a reference to Hyper Text Coffee Pot Control Protocol defined in RFC 2324.
+        </p>
+        <a href="/" class="teapot-link">Return Home</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// ---------------------------------------------
+// PUBLIC DONATION ROUTES (no login required)
+// ---------------------------------------------
+app.get("/donations/donate", (req, res) => {
+  res.render("donations/donate");
+});
+
+app.post("/donations/donate", async (req, res) => {
+  try {
+    const { donor_name, donor_email, donation_amount } = req.body;
+
+    // Try to find participant by email if provided
+    let participantId = null;
+    let donorDisplayName = donor_name || "Anonymous";
+
+    if (donor_email) {
+      const participant = await db("participants")
+        .select("participant_id", "participant_first_name", "participant_last_name")
+        .where("participant_email", donor_email.toLowerCase().trim())
+        .first();
+      
+      if (participant) {
+        participantId = participant.participant_id;
+        donorDisplayName = `${participant.participant_first_name} ${participant.participant_last_name}`;
+      }
+    }
+
+    await db("donations").insert({
+      participant_id: participantId,
+      donation_amount: parseFloat(donation_amount),
+      donation_date: new Date()
+    });
+
+    const linkedMessage = participantId 
+      ? `<p style="color: var(--sage); font-weight: 500;">✓ Donation linked to your Ella Rises account!</p>`
+      : "";
+
+    res.send(`
+      <html>
+      <head><link rel="stylesheet" href="/css/style.css"></head>
+      <body class="landing-body" style="display:flex; justify-content:center; align-items:center; min-height:100vh;">
+        <div style="text-align:center; background: var(--pink-light); padding: 40px; border-radius: 20px; max-width: 500px;">
+          <h1 style="color: var(--green-dark); font-family: var(--font-display);">Thank You, ${donorDisplayName}!</h1>
+          <p>Thank you for your generous donation of $${parseFloat(donation_amount).toFixed(2)}.</p>
+          ${linkedMessage}
+          <p>Your support helps us empower young women through STEAM education.</p>
+          <a href="/" style="display:inline-block; margin-top:20px; padding:12px 30px; background:var(--green-soft); color:white; text-decoration:none; border-radius:20px;">Return Home</a>
+        </div>
+      </body>
+      </html>
+    `);
+  } catch (err) {
+    console.error("Error processing donation:", err);
+    res.send("Error processing donation: " + err.message);
   }
 });
 

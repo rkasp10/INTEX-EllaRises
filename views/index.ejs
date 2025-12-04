@@ -3,45 +3,185 @@
 <head>
     <title>Ella Rises - Dashboard</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
-    <%- include('partials/navbar') %>
+    <!-- Header Bar -->
+    <header class="dashboard-header">
+        <div class="dashboard-header-inner">
+            <a href="/" class="dashboard-logo-link">
+                <img src="/css/images/logo.png" alt="Ella Rises" class="dashboard-logo">
+            </a>
+            <div class="dashboard-header-right">
+                <div class="dashboard-user-info">
+                    <% if (currentUser.level === 'M') { %>
+                        <span class="role-badge-header manager">Manager</span>
+                    <% } else { %>
+                        <span class="role-badge-header member">Member</span>
+                    <% } %>
+                    <span class="dashboard-username"><%= currentUser.name || currentUser.username %></span>
+                </div>
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="dashboard-logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
 
     <main class="dashboard-main">
-        <div class="dashboard-welcome">
-            <h1>Welcome back, <%= currentUser.username %>!</h1>
-            <p class="dashboard-role">
-                <% if (currentUser.level === 'M') { %>
-                    You are logged in as a <strong>Manager</strong>. You can view and manage all data.
-                <% } else { %>
-                    You are logged in as a <strong>Member</strong>. Use the navigation above to explore.
-                <% } %>
-            </p>
-        </div>
-
-        <div class="dashboard-info">
-            <div class="dashboard-info-card">
-                <h3>Quick Guide</h3>
-                <ul>
-                    <li><strong>Participants</strong> — View program participants</li>
-                    <li><strong>Events</strong> — Browse workshops and activities</li>
-                    <li><strong>Surveys</strong> — Access feedback and responses</li>
-                    <li><strong>Milestones</strong> — Track achievements</li>
-                    <li><strong>Donations</strong> — View donation records</li>
-                    <% if (currentUser.level === 'M') { %>
-                    <li><strong>Users</strong> — Manage system accounts</li>
-                    <% } %>
-                </ul>
+        <!-- Welcome Section with Image -->
+        <div class="dashboard-welcome-section">
+            <div class="dashboard-welcome-image">
+                <img src="/css/images/EllaRisesDrawing.jpg" alt="Ella Rises">
             </div>
-
-            <div class="dashboard-info-card dashboard-highlight">
-                <h3>About Ella Rises</h3>
+            <div class="dashboard-welcome-text">
+                <h1>Welcome, <%= currentUser.name || currentUser.username %></h1>
                 <p>
-                    Ella Rises empowers young women ages 7-17 through STEAM education, 
-                    workshops, and mentorship programs that build confidence and inspire 
-                    future leaders.
+                    <% if (currentUser.level === 'M') { %>
+                        You have full access to view and manage all program data.
+                    <% } else { %>
+                        Explore events, complete surveys, and track your progress.
+                    <% } %>
                 </p>
             </div>
+        </div>
+
+        <!-- Navigation Hub -->
+        <div class="nav-hub-header">
+            <h2 class="nav-hub-title">Navigate</h2>
+            <div class="nav-hub-divider"></div>
+        </div>
+        
+        <div class="nav-hub">
+            <% if (currentUser.level === 'M') { %>
+                <!-- MANAGER VIEW -->
+                <a href="/participants" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-light);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Participants</span>
+                        <span class="nav-hub-desc">View & manage all participants</span>
+                    </div>
+                </a>
+
+                <a href="/events" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--blue);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Events</span>
+                        <span class="nav-hub-desc">Manage workshops & activities</span>
+                    </div>
+                </a>
+
+                <a href="/surveys" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--peach);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Surveys</span>
+                        <span class="nav-hub-desc">View all survey responses</span>
+                    </div>
+                </a>
+
+                <a href="/milestones" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--sage);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Milestones</span>
+                        <span class="nav-hub-desc">Manage participant milestones</span>
+                    </div>
+                </a>
+
+                <a href="/donations" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-mid);">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Donations</span>
+                        <span class="nav-hub-desc">View donation records</span>
+                    </div>
+                </a>
+
+                <a href="/users" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--purple);">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Users</span>
+                        <span class="nav-hub-desc">Manage system accounts</span>
+                    </div>
+                </a>
+
+            <% } else { %>
+                <!-- PARTICIPANT VIEW -->
+                <!-- Row 1 -->
+                <a href="/participants" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-light);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Profile</span>
+                        <span class="nav-hub-desc">View your profile</span>
+                    </div>
+                </a>
+
+                <a href="/events" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--blue);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">My Events</span>
+                        <span class="nav-hub-desc">View your registered events</span>
+                    </div>
+                </a>
+
+                <!-- Row 2 -->
+                <a href="/surveys" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--peach);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Surveys</span>
+                        <span class="nav-hub-desc">Complete your surveys</span>
+                    </div>
+                </a>
+
+                <a href="/events/browse" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--sage);">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Browse Events</span>
+                        <span class="nav-hub-desc">Find & register for events</span>
+                    </div>
+                </a>
+
+                <!-- Row 3 -->
+                <a href="/donations" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--pink-mid);">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Donations</span>
+                        <span class="nav-hub-desc">See our generous supporters</span>
+                    </div>
+                </a>
+
+                <a href="/milestones" class="nav-hub-card">
+                    <div class="nav-hub-icon-wrap" style="background-color: var(--purple);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="nav-hub-text">
+                        <span class="nav-hub-label">Milestones</span>
+                        <span class="nav-hub-desc">Track your achievements</span>
+                    </div>
+                </a>
+            <% } %>
         </div>
     </main>
 
