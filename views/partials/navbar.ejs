@@ -6,7 +6,11 @@
   </div>
 
   <div class="nav-links">
+    <% if (currentUser && currentUser.level === 'M') { %>
     <a href="/participants" class="nav-link">Participants</a>
+    <% }  else { %>
+      <a href="/participants" class="nav-link">Profile</a>
+    <% } %>
     <a href="/events" class="nav-link">Events</a>
     <a href="/surveys" class="nav-link">Surveys</a>
     <a href="/milestones" class="nav-link">Milestones</a>
