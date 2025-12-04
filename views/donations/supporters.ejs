@@ -16,6 +16,28 @@
             </div>
         </div>
 
+        <% if (typeof myDonations !== 'undefined' && myDonations.length > 0) { %>
+        <!-- My Donation History -->
+        <div class="my-donations-section">
+            <h2><i class="fas fa-gift"></i> Your Donation History</h2>
+            <div class="my-donations-grid">
+                <% myDonations.forEach(d => { %>
+                    <div class="my-donation-card">
+                        <div class="my-donation-amount">$<%= parseFloat(d.donation_amount).toFixed(2) %></div>
+                        <div class="my-donation-date">
+                            <% if (d.donation_date) { %>
+                                <%= new Date(d.donation_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+                            <% } else { %>
+                                Date not recorded
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <p class="my-donations-thanks">Thank you for your generous support!</p>
+        </div>
+        <% } %>
+
         <!-- Gratitude Message -->
         <div class="gratitude-card">
             <div class="gratitude-icon">

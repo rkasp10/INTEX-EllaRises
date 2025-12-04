@@ -80,7 +80,7 @@ app.get("/login", (req, res) => {
   if (req.session.user) {
     return res.redirect("/");
   }
-  res.render("login");
+  res.render("login", { error: req.query.error });
 });
 
 app.post("/login", async (req, res) => {
@@ -107,12 +107,12 @@ app.post("/login", async (req, res) => {
     console.log("User found in DB:", user);
 
     if (!user) {
-      return res.send("Invalid username or password (user not found)");
+      return res.redirect("/login?error=invalid");
     }
 
     // TODO: Replace this with bcrypt later
     if (user.password !== password) {
-      return res.send("Invalid username or password");
+      return res.redirect("/login?error=invalid");
     }
 
     // Check participant_role to determine if admin or participant
@@ -257,9 +257,15 @@ app.post("/register/complete", async (req, res) => {
     res.redirect("/");
   } catch (err) {
     console.error("Complete registration error:", err);
+    
+    let errorMessage = "Registration failed. Please try again.";
+    if (err.message && err.message.includes("value too long")) {
+      errorMessage = "One of your entries is too long. Please shorten School/Employer and Field of Interest to 19 characters or less.";
+    }
+    
     res.render("register-details", {
       username, email, password,
-      error: "Registration failed. Please try again."
+      error: errorMessage
     });
   }
 });
@@ -460,6 +466,63 @@ app.get("/teapot", (req, res) => {
     </body>
     </html>
   `);
+});
+
+// ---------------------------------------------
+// PUBLIC DONATION ROUTES (no login required)
+// ---------------------------------------------
+app.get("/donations/donate", (req, res) => {
+  res.render("donations/donate");
+});
+
+app.post("/donations/donate", async (req, res) => {
+  try {
+    const { donor_name, donor_email, donation_amount } = req.body;
+
+    // Try to find participant by email if provided
+    let participantId = null;
+    let donorDisplayName = donor_name || "Anonymous";
+
+    if (donor_email) {
+      const participant = await db("participants")
+        .select("participant_id", "participant_first_name", "participant_last_name")
+        .where("participant_email", donor_email.toLowerCase().trim())
+        .first();
+      
+      if (participant) {
+        participantId = participant.participant_id;
+        donorDisplayName = `${participant.participant_first_name} ${participant.participant_last_name}`;
+      }
+    }
+
+    await db("donations").insert({
+      participant_id: participantId,
+      donation_amount: parseFloat(donation_amount),
+      donation_date: new Date()
+    });
+
+    const linkedMessage = participantId 
+      ? `<p style="color: var(--sage); font-weight: 500;">✓ Donation linked to your Ella Rises account!</p>`
+      : "";
+
+    res.send(`
+      <html>
+      <head><link rel="stylesheet" href="/css/style.css"></head>
+      <body class="landing-body" style="display:flex; justify-content:center; align-items:center; min-height:100vh;">
+        <div style="text-align:center; background: var(--pink-light); padding: 40px; border-radius: 20px; max-width: 500px;">
+          <h1 style="color: var(--green-dark); font-family: var(--font-display);">Thank You, ${donorDisplayName}!</h1>
+          <p>Thank you for your generous donation of $${parseFloat(donation_amount).toFixed(2)}.</p>
+          ${linkedMessage}
+          <p>Your support helps us empower young women through STEAM education.</p>
+          <a href="/" style="display:inline-block; margin-top:20px; padding:12px 30px; background:var(--green-soft); color:white; text-decoration:none; border-radius:20px;">Return Home</a>
+        </div>
+      </body>
+      </html>
+    `);
+  } catch (err) {
+    console.error("Error processing donation:", err);
+    res.send("Error processing donation: " + err.message);
+  }
 });
 
 // ---------------------------------------------

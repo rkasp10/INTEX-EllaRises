@@ -7,42 +7,6 @@ function isManager(req) {
 }
 
 // ============================================
-// PUBLIC DONATION FORM (no login required)
-// ============================================
-router.get("/donate", (req, res) => {
-  res.render("donations/donate");
-});
-
-router.post("/donate", async (req, res) => {
-  try {
-    const { participant_id, donation_amount } = req.body;
-
-    await db("donations").insert({
-      participant_id: participant_id ? parseInt(participant_id) : null,
-      donation_amount: parseFloat(donation_amount),
-      donation_date: new Date()
-    });
-
-    res.send(`
-      <html>
-      <head><link rel="stylesheet" href="/css/style.css"></head>
-      <body class="landing-body" style="display:flex; justify-content:center; align-items:center; min-height:100vh;">
-        <div style="text-align:center; background: var(--pink-light); padding: 40px; border-radius: 20px; max-width: 500px;">
-          <h1 style="color: var(--green-dark); font-family: var(--font-display);">Thank You!</h1>
-          <p>Thank you for your generous donation of $${donation_amount}.</p>
-          <p>Your support helps us empower young women through STEAM education.</p>
-          <a href="/" style="display:inline-block; margin-top:20px; padding:12px 30px; background:var(--green-soft); color:white; text-decoration:none; border-radius:20px;">Return Home</a>
-        </div>
-      </body>
-      </html>
-    `);
-  } catch (err) {
-    console.error("Error processing donation:", err);
-    res.send("Error processing donation: " + err.message);
-  }
-});
-
-// ============================================
 // DONATIONS LIST
 // - Managers: Full view with all details + CRUD
 // - Participants: Simplified view (names & dates only) with pagination
@@ -69,10 +33,20 @@ router.get("/", async (req, res) => {
         isManager: true
       });
     } else {
-      // PARTICIPANT VIEW: Show unique supporters (not individual donations)
+      // PARTICIPANT VIEW: Show their own donations + supporters list
       const page = parseInt(req.query.page) || 1;
       const limit = 20; // 20 per page
       const offset = (page - 1) * limit;
+      const participantId = req.session.user.participant_id;
+
+      // Get this participant's own donations (if any)
+      let myDonations = [];
+      if (participantId) {
+        myDonations = await db("donations")
+          .select("donation_id", "donation_amount", "donation_date")
+          .where("participant_id", participantId)
+          .orderBy("donation_date", "desc");
+      }
 
       // Get unique supporters with their most recent donation date
       const supporters = await db("donations")
@@ -92,6 +66,7 @@ router.get("/", async (req, res) => {
 
       res.render("donations/supporters", {
         donations: paginatedSupporters,
+        myDonations,
         isManager: false,
         currentPage: page,
         totalPages,
