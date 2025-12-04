@@ -342,7 +342,7 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-   LANDING PAGE (CLEAN + UPDATED)
+   LANDING PAGE (CLEAN + MINIMAL)
 ----------------------------------------------------- */
 
 .landing-body {
@@ -358,105 +358,30 @@ input[type="submit"]:hover {
   flex-direction: column;
 }
 
-/* FULL-WIDTH NAVBAR - cream like official site */
-.landing-nav {
-  width: 100%;
-  height: 80px;
-
-  background-color: var(--cream);
-  border-bottom: none;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 0 60px;
-  box-sizing: border-box;
-
-  position: sticky;
-  top: 0;
-  z-index: 100;
+/* Header bar with subtle styling */
+.landing-header {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-/* Logo */
-.nav-logo-small {
-  height: 65px;
+.landing-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 60px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.landing-logo {
+  height: 55px;
   width: auto;
 }
 
-/* Navbar center section - navigation links */
-.landing-nav .nav-center {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.landing-nav-link {
-  color: var(--gray-dark);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.landing-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.5);
-  color: var(--green-dark);
-}
-
-/* Navbar right section */
-.landing-nav .nav-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* Donate button in navbar - sage green like official site */
-.landing-nav-donate {
-  background-color: var(--sage);
-  padding: 10px 24px;
-  border-radius: 20px;
-  color: white;
-  font-size: 0.95rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.landing-nav-donate:hover {
-  background-color: var(--green-dark);
-}
-
-/* Home link in navbar */
-.landing-nav-home {
-  color: var(--gray-dark);
-  text-decoration: none;
-  font-weight: 500;
-  padding: 10px 18px;
-  border-radius: 20px;
-  transition: background-color 0.2s;
-}
-
-.landing-nav-home:hover {
-  background-color: var(--pink-light);
-}
-
-/* Login link in navbar - subtle text like official site */
-.landing-nav-login {
-  color: var(--gray-dark);
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-  border-bottom: 2px solid transparent;
-}
-
-.landing-nav-login:hover {
-  color: var(--green-dark);
-  border-bottom: 2px solid var(--green-dark);
+/* Logo in navbar (for other pages) */
+.nav-logo-small {
+  height: 50px;
+  width: auto;
 }
 
 
@@ -715,7 +640,7 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------------------------------------
-    DASHBOARD (Logged-in Home)
+    DASHBOARD (Logged-in Home - Navigation Hub)
 ----------------------------------------------------- */
 .dashboard-body {
   background-color: var(--cream);
@@ -724,73 +649,239 @@ input[type="submit"]:hover {
   flex-direction: column;
 }
 
+/* Dashboard Header */
+.dashboard-header {
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.dashboard-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-logo {
+  height: 45px;
+  width: auto;
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.dashboard-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-username {
+  font-weight: 500;
+  color: var(--gray-dark);
+}
+
+.role-badge-header {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-badge-header.manager {
+  background-color: var(--purple);
+  color: white;
+}
+
+.role-badge-header.member {
+  background-color: var(--sage);
+  color: white;
+}
+
+.dashboard-logout-btn {
+  background-color: transparent;
+  color: var(--gray-dark);
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-logout-btn:hover {
+  background-color: var(--rose);
+  color: white;
+  border-color: var(--rose);
+}
+
+.dashboard-logout-btn i {
+  margin-right: 6px;
+}
+
+/* Dashboard Main */
 .dashboard-main {
   flex: 1;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 50px 20px;
+  padding: 40px 20px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.dashboard-welcome {
-  text-align: center;
-  margin-bottom: 40px;
+/* Welcome Section */
+.dashboard-welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 50px;
+  background: linear-gradient(135deg, var(--pink-light) 0%, #ffeae6 100%);
+  padding: 35px 40px;
+  border-radius: 20px;
 }
 
-.dashboard-welcome h1 {
+.dashboard-welcome-image img {
+  width: 240px;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-welcome-text h1 {
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   color: var(--green-dark);
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
 }
 
-.dashboard-role {
-  font-size: 1.05rem;
-  color: #666;
+.dashboard-welcome-text p {
+  font-size: 1rem;
+  color: #555;
   margin: 0;
+  line-height: 1.6;
 }
 
-.dashboard-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
+/* Navigation Hub Header */
+.nav-hub-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
 }
 
-.dashboard-info-card {
-  background-color: white;
-  padding: 28px 30px;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-}
-
-.dashboard-info-card h3 {
+.nav-hub-title {
   font-family: var(--font-display);
   font-size: 1.3rem;
   color: var(--green-dark);
-  margin: 0 0 15px 0;
-}
-
-.dashboard-info-card ul {
   margin: 0;
-  padding-left: 20px;
-  color: #555;
-  line-height: 1.8;
+  white-space: nowrap;
 }
 
-.dashboard-info-card p {
-  margin: 0;
-  color: #555;
-  line-height: 1.7;
+.nav-hub-divider {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, #ddd, transparent);
 }
 
-.dashboard-highlight {
-  background-color: var(--pink-light);
+/* Navigation Hub Cards - Horizontal Layout */
+.nav-hub {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
-@media (max-width: 700px) {
-  .dashboard-info {
+.nav-hub-card {
+  background-color: white;
+  border-radius: 14px;
+  padding: 20px 24px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #eee;
+}
+
+.nav-hub-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border-color: var(--pink-mid);
+}
+
+.nav-hub-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-hub-icon-wrap i {
+  font-size: 1.3rem;
+  color: var(--green-dark);
+}
+
+.nav-hub-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-hub-label {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--green-dark);
+}
+
+.nav-hub-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+@media (max-width: 800px) {
+  .nav-hub {
     grid-template-columns: 1fr;
+  }
+  
+  .dashboard-welcome-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 25px;
+  }
+  
+  .dashboard-welcome-image img {
+    width: 200px;
+  }
+}
+
+@media (max-width: 500px) {
+  .dashboard-header-inner {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-hub-card {
+    padding: 18px 20px;
   }
 }
 
