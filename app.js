@@ -6,7 +6,7 @@ const helmet = require("helmet"); // Security middleware
 const db = require("./db"); // Shared database connection
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // ---------------------------------------------
 // Middleware
@@ -68,7 +68,7 @@ const userRoutes = require("./routes/users");
 // ---------------------------------------------
 app.get("/", (req, res) => {
   if (!req.session.user) {
-    return res.render("publicLanding");
+    return res.render("publiclanding");
   }
   res.render("index");
 });
@@ -267,130 +267,6 @@ app.post("/register/complete", async (req, res) => {
       username, email, password,
       error: errorMessage
     });
-  }
-});
-
-// ---------------------------------------------
-// DEV BYPASS (remove in production!)
-// ---------------------------------------------
-// Quick login as a regular user
-app.get("/dev/user", (req, res) => {
-  req.session.user = { id: 1, username: "testuser", level: "U" };
-  res.redirect("/");
-});
-
-// Quick login as a manager
-app.get("/dev/manager", (req, res) => {
-  req.session.user = { id: 1, username: "testmanager", level: "M" };
-  res.redirect("/");
-});
-
-// Test database connection
-app.get("/dev/test-db", async (req, res) => {
-  try {
-    // Get current database name
-    const dbInfo = await db.raw(`SELECT current_database(), current_schema()`);
-    const currentDb = dbInfo.rows[0].current_database;
-    const currentSchema = dbInfo.rows[0].current_schema;
-
-    // List ALL schemas
-    const schemas = await db.raw(`
-      SELECT schema_name 
-      FROM information_schema.schemata
-    `);
-
-    // List all tables in ALL schemas (not just public)
-    const tables = await db.raw(`
-      SELECT table_schema, table_name 
-      FROM information_schema.tables 
-      WHERE table_type = 'BASE TABLE'
-      AND table_schema NOT IN ('pg_catalog', 'information_schema')
-    `);
-    
-    res.send(`
-      <html>
-      <head><link rel="stylesheet" href="/css/style.css"></head>
-      <body style="padding: 40px; font-family: sans-serif;">
-        <h1 style="color: green;">✅ Database Connected!</h1>
-        <h3>Connection Info:</h3>
-        <ul>
-          <li><strong>Database:</strong> ${currentDb}</li>
-          <li><strong>Current Schema:</strong> ${currentSchema}</li>
-        </ul>
-        <h3>All Schemas:</h3>
-        <ul>
-          ${schemas.rows.map(s => `<li>${s.schema_name}</li>`).join('')}
-        </ul>
-        <h3>Tables found (schema.table):</h3>
-        <ul>
-          ${tables.rows.map(t => `<li><a href="/dev/table/${t.table_name}">${t.table_schema}.${t.table_name}</a></li>`).join('')}
-        </ul>
-        <p><em>Click a table name to see its columns and data</em></p>
-        <p><a href="/">← Back to Home</a></p>
-      </body>
-      </html>
-    `);
-  } catch (err) {
-    res.send(`
-      <html>
-      <body style="padding: 40px; font-family: sans-serif;">
-        <h1 style="color: red;">❌ Database Connection Failed</h1>
-        <p><strong>Error:</strong> ${err.message}</p>
-        <p>Check your .env file settings.</p>
-      </body>
-      </html>
-    `);
-  }
-});
-
-// View table details
-app.get("/dev/table/:tableName", async (req, res) => {
-  try {
-    const tableName = req.params.tableName;
-    
-    // Get column info
-    const columns = await db.raw(`
-      SELECT column_name, data_type 
-      FROM information_schema.columns 
-      WHERE table_name = ?
-    `, [tableName]);
-    
-    // Get first 10 rows of data
-    const data = await db(tableName).limit(10);
-    
-    res.send(`
-      <html>
-      <head>
-        <style>
-          body { padding: 40px; font-family: sans-serif; }
-          table { border-collapse: collapse; margin: 20px 0; }
-          th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-          th { background: #f5f5f5; }
-          .back { margin-bottom: 20px; }
-        </style>
-      </head>
-      <body>
-        <p class="back"><a href="/dev/test-db">← Back to Tables</a></p>
-        <h1>Table: ${tableName}</h1>
-        
-        <h3>Columns:</h3>
-        <table>
-          <tr><th>Column Name</th><th>Data Type</th></tr>
-          ${columns.rows.map(c => `<tr><td>${c.column_name}</td><td>${c.data_type}</td></tr>`).join('')}
-        </table>
-        
-        <h3>Sample Data (first 10 rows):</h3>
-        ${data.length > 0 ? `
-          <table>
-            <tr>${Object.keys(data[0]).map(k => `<th>${k}</th>`).join('')}</tr>
-            ${data.map(row => `<tr>${Object.values(row).map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}
-          </table>
-        ` : '<p>No data in this table yet.</p>'}
-      </body>
-      </html>
-    `);
-  } catch (err) {
-    res.send(`<h1>Error</h1><p>${err.message}</p><a href="/dev/test-db">Back</a>`);
   }
 });
 
