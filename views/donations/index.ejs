@@ -26,7 +26,7 @@
         <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="searchInput" placeholder="Search by donor name or email..." onkeyup="filterTable()">
-            <span class="search-count"><span id="visibleCount"><%= donations.length %></span> of <%= donations.length %> donations</span>
+            <span class="search-count"><span id="visibleCount"><%= donations.length %></span> of <%= totalItems %> donations</span>
         </div>
 
         <% if (donations.length === 0) { %>
@@ -63,6 +63,21 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="/donations?page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+                    <% } %>
+                    
+                    <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
+                    
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/donations?page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+                    <% } %>
+                </div>
+            <% } %>
         <% } %>
     </main>
 

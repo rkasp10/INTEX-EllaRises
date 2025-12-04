@@ -3,6 +3,7 @@
 <head>
     <title>Survey Responses - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .total-note {
             font-size: 0.85rem;
@@ -219,41 +220,6 @@
             gap: 8px;
         }
 
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 30px;
-            padding: 20px;
-        }
-        .pagination a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            background: var(--sage);
-            color: white;
-            transition: all 0.2s;
-        }
-        .pagination a:hover {
-            background: var(--green-dark);
-            transform: translateY(-2px);
-        }
-        .pagination .disabled {
-            background: #ddd;
-            color: #999;
-            pointer-events: none;
-        }
-        .pagination .page-info {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
         .filter-context {
             background: var(--pink-light);
             padding: 12px 20px;
@@ -464,17 +430,13 @@
                 %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/surveys?<%= queryParams %>page=<%= currentPage - 1 %>">← Previous</a>
-                    <% } else { %>
-                        <a class="disabled">← Previous</a>
+                        <a href="/surveys?<%= queryParams %>page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
                     <% } %>
 
                     <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
 
                     <% if (currentPage < totalPages) { %>
-                        <a href="/surveys?<%= queryParams %>page=<%= currentPage + 1 %>">Next →</a>
-                    <% } else { %>
-                        <a class="disabled">Next →</a>
+                        <a href="/surveys?<%= queryParams %>page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
                     <% } %>
                 </div>
             <% } %>

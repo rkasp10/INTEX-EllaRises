@@ -9,6 +9,13 @@ const db = require("../db"); // Shared database connection
 // ============================================
 router.get("/", async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    const [{ count }] = await db("users").count("user_id as count");
+    const totalPages = Math.ceil(count / limit);
+
     const users = await db("users")
       .select(
         "users.*",
@@ -18,9 +25,16 @@ router.get("/", async (req, res) => {
         "participants.participant_role"
       )
       .leftJoin("participants", "users.participant_id", "participants.participant_id")
-      .orderBy("users.username");
+      .orderBy("users.username")
+      .limit(limit)
+      .offset(offset);
 
-    res.render("users/index", { users });
+    res.render("users/index", { 
+      users,
+      currentPage: page,
+      totalPages,
+      totalItems: parseInt(count)
+    });
   } catch (err) {
     console.error("Error loading users:", err);
     res.send("Error loading users: " + err.message);

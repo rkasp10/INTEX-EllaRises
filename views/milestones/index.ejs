@@ -21,7 +21,7 @@
         <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="searchInput" placeholder="Search by participant name or milestone..." onkeyup="filterTable()">
-            <span class="search-count"><span id="visibleCount"><%= milestones.length %></span> of <%= milestones.length %> milestones</span>
+            <span class="search-count"><span id="visibleCount"><%= milestones.length %></span> of <%= totalItems %> milestones</span>
         </div>
 
         <% if (milestones.length === 0) { %>
@@ -56,6 +56,21 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="/milestones?page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+                    <% } %>
+                    
+                    <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
+                    
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/milestones?page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+                    <% } %>
+                </div>
+            <% } %>
         <% } %>
     </main>
 

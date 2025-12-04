@@ -9,12 +9,13 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>My Profile</h1>
-        </div>
+        <div class="content-centered">
+            <div class="page-header">
+                <h1>My Profile</h1>
+            </div>
 
-        <% if (!participant) { %>
-            <div class="profile-card">
+            <% if (!participant) { %>
+                <div class="profile-card">
                 <div class="profile-empty">
                     <h2>Welcome to Ella Rises!</h2>
                     <p>You haven't created your participant profile yet.</p>
@@ -78,6 +79,7 @@
                 </div>
             </div>
         <% } %>
+        </div>
     </main>
 
     <%- include('../partials/footer') %>

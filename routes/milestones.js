@@ -14,7 +14,14 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // Manager sees all milestones with participant info
+      // Manager sees all milestones with participant info (paginated)
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const offset = (page - 1) * limit;
+
+      const [{ count }] = await db("milestones").count("milestone_id as count");
+      const totalPages = Math.ceil(count / limit);
+
       const milestones = await db("milestones")
         .select(
           "milestones.*",
@@ -22,9 +29,17 @@ router.get("/", async (req, res) => {
           "participants.participant_last_name"
         )
         .leftJoin("participants", "milestones.participant_id", "participants.participant_id")
-        .orderBy("milestones.milestone_date", "desc");
+        .orderBy("milestones.milestone_date", "desc")
+        .limit(limit)
+        .offset(offset);
 
-      res.render("milestones/index", { milestones, isManager: true });
+      res.render("milestones/index", { 
+        milestones, 
+        isManager: true,
+        currentPage: page,
+        totalPages,
+        totalItems: parseInt(count)
+      });
     } else {
       // User sees their own milestones
       const participantId = req.session.user.participant_id;

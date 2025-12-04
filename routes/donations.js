@@ -14,7 +14,18 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // MANAGER VIEW: Full details
+      // MANAGER VIEW: Full details with pagination
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const offset = (page - 1) * limit;
+
+      const [{ count }] = await db("donations").count("donation_id as count");
+      const totalPages = Math.ceil(count / limit);
+
+      // Get total donation amount (all donations, not just current page)
+      const [{ total }] = await db("donations").sum("donation_amount as total");
+      const totalDonationAmount = parseFloat(total || 0);
+
       const donations = await db("donations")
         .select(
           "donations.*",
@@ -23,14 +34,17 @@ router.get("/", async (req, res) => {
           "participants.participant_email"
         )
         .leftJoin("participants", "donations.participant_id", "participants.participant_id")
-        .orderByRaw("CASE WHEN donations.donation_date IS NULL THEN 1 ELSE 0 END, donations.donation_date DESC");
-
-      const totalDonations = donations.reduce((sum, d) => sum + parseFloat(d.donation_amount || 0), 0);
+        .orderByRaw("CASE WHEN donations.donation_date IS NULL THEN 1 ELSE 0 END, donations.donation_date DESC")
+        .limit(limit)
+        .offset(offset);
 
       res.render("donations/index", {
         donations,
-        totalDonations,
-        isManager: true
+        totalDonations: totalDonationAmount,
+        isManager: true,
+        currentPage: page,
+        totalPages,
+        totalItems: parseInt(count)
       });
     } else {
       // PARTICIPANT VIEW: Show their own donations + supporters list

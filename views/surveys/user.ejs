@@ -9,14 +9,15 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>My Surveys</h1>
-        </div>
+        <div class="content-centered">
+            <div class="page-header">
+                <h1>My Surveys</h1>
+            </div>
 
-        <% if (pendingSurveys && pendingSurveys.length > 0) { %>
-            <h3>Pending Surveys</h3>
-            <% pendingSurveys.forEach(survey => { %>
-                <div class="survey-card pending">
+            <% if (pendingSurveys && pendingSurveys.length > 0) { %>
+                <h3>Pending Surveys</h3>
+                <% pendingSurveys.forEach(survey => { %>
+                    <div class="survey-card pending">
                     <div class="survey-card-header">
                         <span class="survey-badge pending">Pending</span>
                         <h3><%= survey.event_name %></h3>
@@ -25,36 +26,41 @@
                     <a href="/surveys/fill/<%= survey.registration_id %>" class="btn-submit">Fill Survey</a>
                 </div>
             <% }) %>
-        <% } else { %>
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="fas fa-check-circle"></i>
+            <% } else { %>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <p>You're all caught up! No pending surveys.</p>
                 </div>
-                <p>You're all caught up! No pending surveys.</p>
-            </div>
-        <% } %>
+            <% } %>
+        </div>
 
         <% if (completedSurveys && completedSurveys.length > 0) { %>
-            <h3 style="margin-top: 30px;">Completed Surveys</h3>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Satisfaction</th>
-                            <th>Date Submitted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% completedSurveys.forEach(survey => { %>
+            <div class="completed-surveys-section">
+                <h3>Completed Surveys</h3>
+                <div class="table-wrapper">
+                    <table class="data-table compact">
+                        <thead>
                             <tr>
-                                <td><%= survey.event_name %></td>
-                                <td><span class="rating-badge"><%= survey.survey_satisfaction_score %>/5</span></td>
-                                <td><%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString() : '-' %></td>
+                                <th>Event</th>
+                                <th>Overall</th>
+                                <th>Date</th>
+                                <th></th>
                             </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% completedSurveys.forEach(survey => { %>
+                                <tr>
+                                    <td><%= survey.event_name %></td>
+                                    <td><span class="rating-badge"><%= survey.survey_overall_score %>/5</span></td>
+                                    <td><%= survey.survey_submission_date ? new Date(survey.survey_submission_date).toLocaleDateString() : '-' %></td>
+                                    <td><a href="/surveys/view/<%= survey.survey_id %>" class="btn-edit">View</a></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         <% } %>
     </main>

@@ -15,11 +15,26 @@ function isManager(req) {
 router.get("/", async (req, res) => {
   try {
     if (isManager(req)) {
-      // MANAGER VIEW: Show all participants
-      const participants = await db("participants").select("*");
+      // MANAGER VIEW: Show all participants with pagination
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const offset = (page - 1) * limit;
+
+      const [{ count }] = await db("participants").count("participant_id as count");
+      const totalPages = Math.ceil(count / limit);
+
+      const participants = await db("participants")
+        .select("*")
+        .orderBy("participant_last_name")
+        .limit(limit)
+        .offset(offset);
+
       res.render("participants/index", {
         participants,
-        isManager: true
+        isManager: true,
+        currentPage: page,
+        totalPages,
+        totalItems: parseInt(count)
       });
     } else {
       // USER VIEW: Show only their own profile
