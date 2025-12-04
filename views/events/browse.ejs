@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Events - Ella Rises</title>
+    <title>Browse Events - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
         .filters-container {
@@ -15,35 +15,9 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
-        }
-        .filter-row:last-child {
-            margin-bottom: 0;
-        }
-        .filter-toggle {
-            display: flex;
-            gap: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid var(--sage);
-        }
-        .filter-toggle a {
-            padding: 10px 24px;
-            text-decoration: none;
-            color: var(--green-dark);
-            font-weight: 500;
-            transition: all 0.2s;
-            background: white;
-        }
-        .filter-toggle a:hover {
-            background: var(--pink-light);
-        }
-        .filter-toggle a.active {
-            background: var(--sage);
-            color: white;
+            flex-wrap: wrap;
         }
         .filter-info {
-            margin-left: auto;
             color: #666;
             font-size: 0.9rem;
         }
@@ -54,6 +28,7 @@
             gap: 12px;
             align-items: center;
             flex-wrap: wrap;
+            width: 100%;
         }
         .filter-group {
             display: flex;
@@ -183,18 +158,52 @@
             align-items: center;
             gap: 4px;
         }
+        .event-description {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
         .event-actions-row {
             display: flex;
             gap: 8px;
+            flex-direction: column;
+            align-items: flex-end;
         }
-        .event-actions-row .btn-edit,
-        .event-actions-row .btn-register {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+        .btn-register-event {
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            background: var(--sage);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        .event-actions-row .btn-delete {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+        .btn-register-event:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+        .deadline-info {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .deadline-info.urgent {
+            color: #dc2626;
+        }
+        
+        /* Error message */
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         /* Pagination */
@@ -231,6 +240,34 @@
             color: #666;
             font-size: 0.9rem;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: #f0f0f0;
+            color: #666;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body class="dashboard-body">
@@ -239,29 +276,21 @@
     <main class="page-container">
         <div class="page-header">
             <div>
-                <h1><%= isManager ? 'Manage Events' : (filter === 'past' ? 'Past Events' : 'Upcoming Events') %></h1>
-                <p class="page-subtitle"><%= isManager ? 'Create and manage program events' : 'Browse and register for events' %></p>
+                <h1>Browse Events</h1>
+                <p class="page-subtitle">Find and register for upcoming events</p>
             </div>
-            <% if (isManager) { %>
-                <a href="/events/add" class="btn-add">+ Add Event</a>
-            <% } %>
+            <a href="/events" class="btn-back">← Back to My Events</a>
         </div>
+
+        <% if (typeof error !== 'undefined' && error === 'already_registered') { %>
+            <div class="error-message">
+                ⚠ You're already registered for that event.
+            </div>
+        <% } %>
 
         <!-- Filters Container -->
         <div class="filters-container">
-            <!-- Row 1: Toggle + Count -->
-            <div class="filter-row">
-                <div class="filter-toggle">
-                    <a href="/events?filter=future" class="<%= filter !== 'past' ? 'active' : '' %>">Upcoming</a>
-                    <a href="/events?filter=past" class="<%= filter === 'past' ? 'active' : '' %>">Past</a>
-                </div>
-                <span class="filter-info">Showing <%= events.length %> of <%= totalEvents %> events</span>
-            </div>
-
-            <!-- Row 2: Dropdown Filters -->
-            <form class="filter-row" method="GET" action="/events">
-                <input type="hidden" name="filter" value="<%= filter %>">
-                
+            <form class="filter-row" method="GET" action="/events/browse">
                 <div class="dropdown-filters">
                     <div class="filter-group">
                         <label>Event Name</label>
@@ -296,23 +325,28 @@
                     <div class="filter-actions">
                         <button type="submit" class="btn-filter">Apply</button>
                         <% if (eventName || eventType || eventMonth) { %>
-                            <a href="/events?filter=<%= filter %>" class="btn-clear">Clear</a>
+                            <a href="/events/browse" class="btn-clear">Clear</a>
                         <% } %>
                     </div>
                 </div>
             </form>
+            <div class="filter-info" style="margin-top: 12px;"><%= totalEvents %> events available</div>
         </div>
 
         <% if (events.length === 0) { %>
             <div class="empty-state">
-                <p>No <%= filter === 'past' ? 'past' : 'upcoming' %> events found<%= (eventName || eventType || eventMonth) ? ' matching your filters' : '' %>.</p>
+                <p>No events available<%= (eventName || eventType || eventMonth) ? ' matching your filters' : ' to register for' %>.</p>
                 <% if (eventName || eventType || eventMonth) { %>
-                    <p><a href="/events?filter=<%= filter %>">Clear filters</a></p>
+                    <p><a href="/events/browse">Clear filters</a></p>
                 <% } %>
             </div>
         <% } else { %>
             <div class="events-list">
-                <% events.forEach(event => { %>
+                <% events.forEach(event => { 
+                    const deadlineDate = event.event_registration_deadline ? new Date(event.event_registration_deadline) : null;
+                    const daysUntilDeadline = deadlineDate ? Math.ceil((deadlineDate - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    const isUrgent = daysUntilDeadline !== null && daysUntilDeadline <= 3;
+                %>
                     <div class="event-row">
                         <div class="event-date">
                             <div class="month"><%= new Date(event.event_datetime_start).toLocaleDateString('en-US', { month: 'short' }) %></div>
@@ -330,17 +364,21 @@
                                 <span>🕐 <%= new Date(event.event_datetime_start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) %></span>
                                 <span>👥 <%= event.event_capacity %> spots</span>
                             </div>
+                            <% if (event.event_description) { %>
+                                <p class="event-description"><%= event.event_description %></p>
+                            <% } %>
                         </div>
                         <div class="event-actions-row">
-                            <% if (isManager) { %>
-                                <a href="/events/edit/<%= event.occurrence_id %>" class="btn-edit">Edit</a>
-                                <form action="/events/delete/<%= event.occurrence_id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this event?');">
-                                    <button type="submit" class="btn-delete">Delete</button>
-                                </form>
-                            <% } else { %>
-                                <% if (filter !== 'past') { %>
-                                    <button class="btn-register">Register</button>
-                                <% } %>
+                            <form action="/events/register/<%= event.occurrence_id %>" method="POST" class="inline-form">
+                                <button type="submit" class="btn-register-event">Register</button>
+                            </form>
+                            <% if (deadlineDate) { %>
+                                <span class="deadline-info <%= isUrgent ? 'urgent' : '' %>">
+                                    Deadline: <%= deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                                    <% if (isUrgent && daysUntilDeadline > 0) { %>
+                                        (<%= daysUntilDeadline %> day<%= daysUntilDeadline !== 1 ? 's' : '' %> left!)
+                                    <% } %>
+                                </span>
                             <% } %>
                         </div>
                     </div>
@@ -350,15 +388,14 @@
             <!-- Pagination -->
             <% if (totalPages > 1) { %>
                 <% 
-                    // Build query string for pagination links
-                    let queryParams = `filter=${filter}`;
-                    if (eventName) queryParams += `&name=${eventName}`;
-                    if (eventType) queryParams += `&type=${encodeURIComponent(eventType)}`;
-                    if (eventMonth) queryParams += `&month=${eventMonth}`;
+                    let queryParams = '';
+                    if (eventName) queryParams += `name=${eventName}&`;
+                    if (eventType) queryParams += `type=${encodeURIComponent(eventType)}&`;
+                    if (eventMonth) queryParams += `month=${eventMonth}&`;
                 %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/events?<%= queryParams %>&page=<%= currentPage - 1 %>">← Previous</a>
+                        <a href="/events/browse?<%= queryParams %>page=<%= currentPage - 1 %>">← Previous</a>
                     <% } else { %>
                         <a class="disabled">← Previous</a>
                     <% } %>
@@ -366,7 +403,7 @@
                     <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
 
                     <% if (currentPage < totalPages) { %>
-                        <a href="/events?<%= queryParams %>&page=<%= currentPage + 1 %>">Next →</a>
+                        <a href="/events/browse?<%= queryParams %>page=<%= currentPage + 1 %>">Next →</a>
                     <% } else { %>
                         <a class="disabled">Next →</a>
                     <% } %>
@@ -378,3 +415,4 @@
     <%- include('../partials/footer') %>
 </body>
 </html>
+
