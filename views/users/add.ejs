@@ -5,6 +5,7 @@
 <head>
     <title>Add User - Ella Rises</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
     <%- include('../partials/navbar') %>
@@ -28,16 +29,141 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="participant_id">Link to Participant (Optional)</label>
-                    <select id="participant_id" name="participant_id">
-                        <option value="">-- No Participant Link --</option>
+                    <label for="participant_id">Link to Participant</label>
+                    <select id="participant_id" name="participant_id" onchange="toggleNewParticipant(this.value)">
+                        <option value="new">+ Create New Participant</option>
                         <% if (participants && participants.length > 0) { %>
                             <% participants.forEach(p => { %>
                                 <option value="<%= p.participant_id %>"><%= p.participant_first_name %> <%= p.participant_last_name %> (<%= p.participant_email %>)</option>
                             <% }) %>
                         <% } %>
                     </select>
-                    <small>Only participants without existing user accounts are shown</small>
+                    <small>Select an existing participant or create a new one</small>
+                </div>
+
+                <!-- New Participant Fields (shown when "Create New Participant" is selected) -->
+                <div id="new-participant-fields">
+                    <hr style="margin: 20px 0; border-color: var(--sage);">
+                    <h3 style="margin-bottom: 15px; color: var(--green-dark);">New Participant Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_first_name">First Name *</label>
+                            <input type="text" id="participant_first_name" name="participant_first_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_last_name">Last Name *</label>
+                            <input type="text" id="participant_last_name" name="participant_last_name">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_email">Email *</label>
+                            <input type="email" id="participant_email" name="participant_email">
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_dob">Date of Birth</label>
+                            <input type="date" id="participant_dob" name="participant_dob">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="participant_phone">Phone Number</label>
+                        <input type="tel" id="participant_phone" name="participant_phone" placeholder="801-555-1234">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_city">City</label>
+                            <input type="text" id="participant_city" name="participant_city">
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_state">State</label>
+                            <select id="participant_state" name="participant_state">
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                                <option value="DC">District of Columbia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_zip">Zip Code</label>
+                            <input type="text" id="participant_zip" name="participant_zip">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="participant_school_or_employer">School or Employer</label>
+                        <input type="text" id="participant_school_or_employer" name="participant_school_or_employer">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_field_of_interest">Field of Interest</label>
+                            <select id="participant_field_of_interest" name="participant_field_of_interest">
+                                <option value="">Select an interest</option>
+                                <option value="STEM">STEM</option>
+                                <option value="Arts">Arts</option>
+                                <option value="Both">Both</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_role">Role</label>
+                            <select id="participant_role" name="participant_role">
+                                <option value="participant">Participant</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions">
@@ -50,5 +176,29 @@
     </main>
 
     <%- include('../partials/footer') %>
+
+    <script>
+        function toggleNewParticipant(value) {
+            const newParticipantFields = document.getElementById('new-participant-fields');
+            const firstNameInput = document.getElementById('participant_first_name');
+            const lastNameInput = document.getElementById('participant_last_name');
+            const emailInput = document.getElementById('participant_email');
+
+            if (value === 'new') {
+                newParticipantFields.style.display = 'block';
+                firstNameInput.required = true;
+                lastNameInput.required = true;
+                emailInput.required = true;
+            } else {
+                newParticipantFields.style.display = 'none';
+                firstNameInput.required = false;
+                lastNameInput.required = false;
+                emailInput.required = false;
+            }
+        }
+
+        // Initialize on page load
+        toggleNewParticipant(document.getElementById('participant_id').value);
+    </script>
 </body>
 </html>
