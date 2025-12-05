@@ -1,3 +1,6 @@
+// This file houses all of the routes for the milestones views.
+
+
 const express = require("express");
 const router = express.Router();
 const db = require("../db"); // Shared database connection

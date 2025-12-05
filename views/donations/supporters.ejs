@@ -51,14 +51,34 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="search-bar">
+        <form class="search-bar" method="GET" action="/donations" id="searchForm">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="Search supporters by name..." onkeyup="filterSupporters()">
-        </div>
+            <input type="text" name="search" id="searchInput" placeholder="Search supporters by name..." value="<%= typeof search !== 'undefined' ? search : '' %>" <%= (typeof search !== 'undefined' && search) ? 'autofocus' : '' %>>
+            <% if (typeof search !== 'undefined' && search) { %>
+                <a href="/donations" class="search-clear">Clear</a>
+            <% } %>
+            <span class="search-count"><%= totalDonations %> supporters<%= (typeof search !== 'undefined' && search) ? ' found' : '' %></span>
+        </form>
+        <script>
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 400);
+            });
+            if (searchInput.value) {
+                searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+            }
+        </script>
 
         <% if (donations.length === 0) { %>
             <div class="empty-state">
-                <p>No donations recorded yet.</p>
+                <p>No supporters found<%= (typeof search !== 'undefined' && search) ? ' matching "' + search + '"' : '' %>.</p>
+                <% if (typeof search !== 'undefined' && search) { %>
+                    <p><a href="/donations">Clear search</a></p>
+                <% } %>
             </div>
         <% } else { %>
             <p class="results-info">Showing <%= donations.length %> of <%= totalDonations %> generous supporters</p>
@@ -85,27 +105,21 @@
 
             <!-- Pagination -->
             <% if (totalPages > 1) { %>
+                <%
+                    let queryParams = '';
+                    if (typeof search !== 'undefined' && search) queryParams += `search=${encodeURIComponent(search)}&`;
+                %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/donations?page=<%= currentPage - 1 %>" class="pagination-btn">
+                        <a href="/donations?<%= queryParams %>page=<%= currentPage - 1 %>" class="pagination-btn">
                             <i class="fas fa-chevron-left"></i> Previous
                         </a>
                     <% } %>
                     
-                    <div class="pagination-pages">
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <% if (i === currentPage) { %>
-                                <span class="pagination-page active"><%= i %></span>
-                            <% } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) { %>
-                                <a href="/donations?page=<%= i %>" class="pagination-page"><%= i %></a>
-                            <% } else if (i === currentPage - 2 || i === currentPage + 2) { %>
-                                <span class="pagination-ellipsis">...</span>
-                            <% } %>
-                        <% } %>
-                    </div>
+                    <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
                     
                     <% if (currentPage < totalPages) { %>
-                        <a href="/donations?page=<%= currentPage + 1 %>" class="pagination-btn">
+                        <a href="/donations?<%= queryParams %>page=<%= currentPage + 1 %>" class="pagination-btn">
                             Next <i class="fas fa-chevron-right"></i>
                         </a>
                     <% } %>
@@ -121,23 +135,6 @@
     </main>
 
     <%- include('../partials/footer') %>
-
-    <script>
-        function filterSupporters() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const cards = document.querySelectorAll('.supporter-card');
-            
-            cards.forEach(card => {
-                const name = card.querySelector('.supporter-name').textContent.toLowerCase();
-                if (name.indexOf(filter) > -1) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-    </script>
 </body>
 </html>
 

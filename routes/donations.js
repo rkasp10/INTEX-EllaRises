@@ -1,3 +1,6 @@
+// This file houses all of the routes for the donations views.
+
+
 const express = require("express");
 const router = express.Router();
 const db = require("../db"); // Shared database connection
@@ -71,6 +74,7 @@ router.get("/", async (req, res) => {
     } else {
       // PARTICIPANT VIEW: Show their own donations + supporters list
       const page = parseInt(req.query.page) || 1;
+      const search = req.query.search || "";
       const limit = 20; // 20 per page
       const offset = (page - 1) * limit;
       const participantId = req.session.user.participant_id;
@@ -84,16 +88,29 @@ router.get("/", async (req, res) => {
           .orderBy("donation_date", "desc");
       }
 
-      // Get unique supporters with their most recent donation date
-      const supporters = await db("donations")
+      // Build query for unique supporters with their most recent donation date
+      let supportersQuery = db("donations")
         .select(
+          "participants.participant_id",
           "participants.participant_first_name",
           "participants.participant_last_name"
         )
         .max("donations.donation_date as latest_donation")
         .leftJoin("participants", "donations.participant_id", "participants.participant_id")
-        .groupBy("participants.participant_id", "participants.participant_first_name", "participants.participant_last_name")
-        .orderByRaw("MAX(donations.donation_date) DESC NULLS LAST");
+        .groupBy("participants.participant_id", "participants.participant_first_name", "participants.participant_last_name");
+
+      // Apply search filter
+      if (search) {
+        const searchPattern = `%${search}%`;
+        supportersQuery = supportersQuery.having(function() {
+          this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+            .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern]);
+        });
+      }
+
+      supportersQuery = supportersQuery.orderByRaw("MAX(donations.donation_date) DESC NULLS LAST");
+
+      const supporters = await supportersQuery;
 
       // Manual pagination on the grouped results
       const totalSupporters = supporters.length;
@@ -106,7 +123,8 @@ router.get("/", async (req, res) => {
         isManager: false,
         currentPage: page,
         totalPages,
-        totalDonations: totalSupporters
+        totalDonations: totalSupporters,
+        search
       });
     }
   } catch (err) {

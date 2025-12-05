@@ -1,3 +1,6 @@
+// This file is what is used for all routing files that need access to the database.
+// By defining the connection here, we can easily import the same lines for connection into the other routing files.
+
 // Shared database connection - used by all routes
 const knex = require("knex");
 
@@ -10,7 +13,7 @@ const db = knex({
     password: process.env.RDS_PASSWORD || process.env.DB_PASSWORD,
     database: process.env.RDS_DB_NAME || process.env.DB_NAME,
     port: process.env.RDS_PORT || 5432,
-    ssl: process.env.RDS_SSL ? { rejectUnauthorized: false } : false,
+    ssl: { rejectUnauthorized: false },
   },
   pool: {
     min: 2,
