@@ -24,9 +24,12 @@
     <% if (!currentUser) { %>
       <a href="/login" class="nav-login-btn">Login</a>
     <% } else { %>
-      <span class="nav-user">Welcome, <%= currentUser.username %></span>
+      <% if (currentUser.level === 'M') { %>
+        <span class="nav-role-badge manager">Manager</span>
+      <% } %>
+      <span class="nav-user"><%= currentUser.username %></span>
       <form action="/logout" method="POST" style="display:inline;">
-        <button type="submit" class="nav-logout-btn">Logout</button>
+        <button type="submit" class="nav-logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </form>
     <% } %>
   </div>
