@@ -23,15 +23,30 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="search-bar">
+        <form class="search-bar" method="GET" action="/donations" id="searchForm">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="Search by donor name or email..." onkeyup="filterTable()">
-            <span class="search-count"><span id="visibleCount"><%= donations.length %></span> of <%= totalItems %> donations</span>
-        </div>
+            <input type="text" name="search" id="searchInput" placeholder="Search by donor name or email..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+            <% if (typeof search !== 'undefined' && search) { %>
+                <a href="/donations" class="search-clear">Clear</a>
+            <% } %>
+            <span class="search-count"><%= totalItems %> donations<%= (typeof search !== 'undefined' && search) ? ' found' : '' %></span>
+        </form>
+        <script>
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 400);
+            });
+        </script>
 
         <% if (donations.length === 0) { %>
             <div class="empty-state">
-                <p>No donations recorded yet.</p>
+                <p>No donations found<%= (typeof search !== 'undefined' && search) ? ' matching "' + search + '"' : '' %>.</p>
+                <% if (typeof search !== 'undefined' && search) { %>
+                    <p><a href="/donations">Clear search</a></p>
+                <% } %>
             </div>
         <% } else { %>
             <div class="table-wrapper">
@@ -66,15 +81,16 @@
 
             <!-- Pagination -->
             <% if (totalPages > 1) { %>
+                <% const searchParam = (typeof search !== 'undefined' && search) ? `&search=${encodeURIComponent(search)}` : ''; %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/donations?page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+                        <a href="/donations?page=<%= currentPage - 1 %><%= searchParam %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
                     <% } %>
                     
                     <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
                     
                     <% if (currentPage < totalPages) { %>
-                        <a href="/donations?page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+                        <a href="/donations?page=<%= currentPage + 1 %><%= searchParam %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
                     <% } %>
                 </div>
             <% } %>
@@ -82,36 +98,5 @@
     </main>
 
     <%- include('../partials/footer') %>
-
-    <script>
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('donationsTable');
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            let visibleCount = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let found = false;
-                
-                // Search in donor name and email columns (1, 2)
-                for (let j of [1, 2]) {
-                    if (cells[j]) {
-                        const text = cells[j].textContent || cells[j].innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                
-                rows[i].style.display = found ? '' : 'none';
-                if (found) visibleCount++;
-            }
-
-            document.getElementById('visibleCount').textContent = visibleCount;
-        }
-    </script>
 </body>
 </html>

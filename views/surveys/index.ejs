@@ -293,6 +293,15 @@
                     </select>
                 </div>
 
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select name="sort" onchange="this.form.submit()">
+                        <option value="date_desc" <%= sortBy === 'date_desc' ? 'selected' : '' %>>Newest First</option>
+                        <option value="score_asc" <%= sortBy === 'score_asc' ? 'selected' : '' %>>Score: Low → High</option>
+                        <option value="score_desc" <%= sortBy === 'score_desc' ? 'selected' : '' %>>Score: High → Low</option>
+                    </select>
+                </div>
+
                 <% if (eventType || eventName || filterYear || filterMonth) { %>
                     <div class="filter-actions">
                         <a href="/surveys" class="btn-clear">Clear Filters</a>
@@ -427,6 +436,7 @@
                     if (eventName) queryParams += `name=${eventName}&`;
                     if (filterYear) queryParams += `year=${filterYear}&`;
                     if (filterMonth) queryParams += `month=${filterMonth}&`;
+                    if (sortBy) queryParams += `sort=${sortBy}&`;
                 %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>

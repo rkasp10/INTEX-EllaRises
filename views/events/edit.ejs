@@ -8,11 +8,12 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>Edit Event</h1>
-        </div>
+        <div class="form-page-wrapper">
+            <div class="page-header">
+                <h1>Edit Event</h1>
+            </div>
 
-        <div class="form-card">
+            <div class="form-card">
             <form action="/events/edit/<%= event.occurrence_id %>" method="POST" class="crud-form">
                 <div class="form-group">
                     <label for="template_id">Event Template</label>
@@ -59,7 +60,8 @@
                     <a href="/events" class="btn-cancel">Cancel</a>
                     <button type="submit" class="btn-submit">Save Changes</button>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </main>
 

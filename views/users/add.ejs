@@ -8,11 +8,12 @@
     <%- include('../partials/navbar') %>
 
     <main class="page-container">
-        <div class="page-header">
-            <h1>Add User</h1>
-        </div>
+        <div class="form-page-wrapper">
+            <div class="page-header">
+                <h1>Add User</h1>
+            </div>
 
-        <div class="form-card">
+            <div class="form-card">
             <form action="/users/add" method="POST" class="crud-form">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -41,7 +42,8 @@
                     <a href="/users" class="btn-cancel">Cancel</a>
                     <button type="submit" class="btn-submit">Create User</button>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </main>
 

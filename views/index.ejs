@@ -45,6 +45,11 @@
                         Explore events, complete surveys, and track your progress.
                     <% } %>
                 </p>
+                <% if (currentUser.level === 'M') { %>
+                    <a href="/analytics" class="analytics-link">
+                        <i class="fas fa-chart-bar"></i> View Analytics Dashboard
+                    </a>
+                <% } %>
             </div>
         </div>
 

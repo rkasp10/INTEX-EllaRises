@@ -10,13 +10,11 @@ const db = require("../db"); // Shared database connection
 router.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const search = req.query.search || "";
+    const limit = 12;
     const offset = (page - 1) * limit;
 
-    const [{ count }] = await db("users").count("user_id as count");
-    const totalPages = Math.ceil(count / limit);
-
-    const users = await db("users")
+    let query = db("users")
       .select(
         "users.*",
         "participants.participant_first_name",
@@ -24,7 +22,31 @@ router.get("/", async (req, res) => {
         "participants.participant_email",
         "participants.participant_role"
       )
-      .leftJoin("participants", "users.participant_id", "participants.participant_id")
+      .leftJoin("participants", "users.participant_id", "participants.participant_id");
+    
+    let countQuery = db("users")
+      .leftJoin("participants", "users.participant_id", "participants.participant_id");
+
+    if (search) {
+      const searchPattern = `%${search}%`;
+      query = query.where(function() {
+        this.whereRaw("LOWER(users.username) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_email) LIKE LOWER(?)", [searchPattern]);
+      });
+      countQuery = countQuery.where(function() {
+        this.whereRaw("LOWER(users.username) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
+          .orWhereRaw("LOWER(participants.participant_email) LIKE LOWER(?)", [searchPattern]);
+      });
+    }
+
+    const [{ count }] = await countQuery.count("users.user_id as count");
+    const totalPages = Math.ceil(count / limit);
+
+    const users = await query
       .orderBy("users.username")
       .limit(limit)
       .offset(offset);
@@ -33,7 +55,8 @@ router.get("/", async (req, res) => {
       users,
       currentPage: page,
       totalPages,
-      totalItems: parseInt(count)
+      totalItems: parseInt(count),
+      search
     });
   } catch (err) {
     console.error("Error loading users:", err);
@@ -86,6 +109,8 @@ router.post("/add", async (req, res) => {
 router.get("/edit/:id", async (req, res) => {
   try {
     const user = await db("users")
+      .select("users.*", "participants.participant_role")
+      .leftJoin("participants", "users.participant_id", "participants.participant_id")
       .where({ user_id: req.params.id })
       .first();
 
@@ -106,7 +131,7 @@ router.get("/edit/:id", async (req, res) => {
 // ============================================
 router.post("/edit/:id", async (req, res) => {
   try {
-    const { username, password, participant_id } = req.body;
+    const { username, password, participant_id, participant_role } = req.body;
 
     const updateData = {
       username,
@@ -122,6 +147,13 @@ router.post("/edit/:id", async (req, res) => {
     await db("users")
       .where({ user_id: req.params.id })
       .update(updateData);
+
+    // Update participant role if there's a linked participant
+    if (participant_id) {
+      await db("participants")
+        .where({ participant_id: parseInt(participant_id) })
+        .update({ participant_role: participant_role || 'participant' });
+    }
 
     res.redirect("/users");
   } catch (err) {
