@@ -736,8 +736,8 @@ input[type="submit"]:hover {
 
 /* Dashboard Header */
 .dashboard-header {
-  background-color: white;
-  border-bottom: 1px solid #eee;
+  background-color: var(--pink-light);
+  border-bottom: 2px solid var(--pink-mid);
 }
 
 .dashboard-header-inner {
