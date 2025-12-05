@@ -1,3 +1,6 @@
+// This file is what is used for all routing files that need access to the database.
+// By defining the connection here, we can easily import the same lines for connection into the other routing files.
+
 // Shared database connection - used by all routes
 const knex = require("knex");
 

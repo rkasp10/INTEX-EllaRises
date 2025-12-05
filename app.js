@@ -1,3 +1,16 @@
+// INTEX TEAM 2 - 12 - Ella Rises, Website Application
+// Authors: Matthew Pulsipher, Ryan Kasparian, Blake Pead, Gavin Clifton
+// Description: This website application is designed for both admin and participants for the Ella Rises organization.
+// You will find that it has views designed for both roles to access respective necessary information/data,
+// to add, edit, and delete data to the ella rises database.
+// ------------------------------------------------------------
+
+
+
+// This file is the main entry point for the application. It configures all of the app's general settings and initial routes.
+// initial routes meaning auth routes, i.e. login, register, logout, etc.
+// it also handles the public landing page and dashboard. And at the bottom there is the 418 status code route, and the public donation routes.
+
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
