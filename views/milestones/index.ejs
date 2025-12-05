@@ -18,15 +18,34 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="search-bar">
+        <form class="search-bar" method="GET" action="/milestones" id="searchForm">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="Search by participant name or milestone..." onkeyup="filterTable()">
-            <span class="search-count"><span id="visibleCount"><%= milestones.length %></span> of <%= totalItems %> milestones</span>
-        </div>
+            <input type="text" name="search" id="searchInput" placeholder="Search by participant name or milestone..." value="<%= typeof search !== 'undefined' ? search : '' %>" <%= (typeof search !== 'undefined' && search) ? 'autofocus' : '' %>>
+            <% if (typeof search !== 'undefined' && search) { %>
+                <a href="/milestones" class="search-clear">Clear</a>
+            <% } %>
+            <span class="search-count"><%= totalItems %> milestones<%= (typeof search !== 'undefined' && search) ? ' found' : '' %></span>
+        </form>
+        <script>
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 400);
+            });
+            if (searchInput.value) {
+                searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+            }
+        </script>
 
         <% if (milestones.length === 0) { %>
             <div class="empty-state">
-                <p>No milestones recorded yet.</p>
+                <p>No milestones found<%= (typeof search !== 'undefined' && search) ? ' matching "' + search + '"' : '' %>.</p>
+                <% if (typeof search !== 'undefined' && search) { %>
+                    <p><a href="/milestones">Clear search</a></p>
+                <% } %>
             </div>
         <% } else { %>
             <div class="table-wrapper">
@@ -59,15 +78,19 @@
 
             <!-- Pagination -->
             <% if (totalPages > 1) { %>
+                <%
+                    let queryParams = '';
+                    if (typeof search !== 'undefined' && search) queryParams += `search=${encodeURIComponent(search)}&`;
+                %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/milestones?page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+                        <a href="/milestones?<%= queryParams %>page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
                     <% } %>
                     
                     <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
                     
                     <% if (currentPage < totalPages) { %>
-                        <a href="/milestones?page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+                        <a href="/milestones?<%= queryParams %>page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
                     <% } %>
                 </div>
             <% } %>
@@ -75,36 +98,5 @@
     </main>
 
     <%- include('../partials/footer') %>
-
-    <script>
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('milestonesTable');
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            let visibleCount = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let found = false;
-                
-                // Search in participant name and milestone title columns (0, 1)
-                for (let j of [0, 1]) {
-                    if (cells[j]) {
-                        const text = cells[j].textContent || cells[j].innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                
-                rows[i].style.display = found ? '' : 'none';
-                if (found) visibleCount++;
-            }
-
-            document.getElementById('visibleCount').textContent = visibleCount;
-        }
-    </script>
 </body>
 </html>
