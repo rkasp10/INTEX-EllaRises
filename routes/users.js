@@ -90,13 +90,60 @@ router.get("/add", async (req, res) => {
 // ============================================
 router.post("/add", async (req, res) => {
   try {
-    const { username, password, participant_id } = req.body;
+    const { 
+      username, 
+      password, 
+      participant_id,
+      // New participant fields
+      participant_first_name,
+      participant_last_name,
+      participant_email,
+      participant_dob,
+      participant_phone,
+      participant_city,
+      participant_state,
+      participant_zip,
+      participant_school_or_employer,
+      participant_field_of_interest,
+      participant_role
+    } = req.body;
+
+    let finalParticipantId = null;
+
+    // If "new" is selected, create a new participant first
+    if (participant_id === 'new') {
+      // Validate required fields
+      if (!participant_first_name || !participant_last_name || !participant_email) {
+        return res.send("Error: First name, last name, and email are required for new participants");
+      }
+
+      // Insert new participant and get the ID
+      const [newParticipant] = await db("participants")
+        .insert({
+          participant_first_name,
+          participant_last_name,
+          participant_email,
+          participant_dob: participant_dob || null,
+          participant_phone: participant_phone || null,
+          participant_city: participant_city || null,
+          participant_state: participant_state || null,
+          participant_zip: participant_zip || null,
+          participant_school_or_employer: participant_school_or_employer || null,
+          participant_field_of_interest: participant_field_of_interest || null,
+          participant_role: participant_role || 'participant'
+        })
+        .returning("participant_id");
+
+      finalParticipantId = newParticipant.participant_id || newParticipant;
+    } else if (participant_id) {
+      finalParticipantId = parseInt(participant_id);
+    }
 
     // TODO: Hash password with bcrypt
     await db("users").insert({
       username,
       password,
-      participant_id: participant_id ? parseInt(participant_id) : null
+      participant_id: finalParticipantId
     });
 
     res.redirect("/users");

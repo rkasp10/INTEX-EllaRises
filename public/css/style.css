@@ -1192,7 +1192,9 @@ input[type="submit"]:hover {
   width: 18%;
 }
 
-.data-table td:last-child {
+.data-table td:last-child,
+.data-table th:last-child {
+  text-align: right;
   vertical-align: middle;
 }
 
@@ -1226,6 +1228,7 @@ input[type="submit"]:hover {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
   flex-wrap: nowrap;
   height: 100%;
 }

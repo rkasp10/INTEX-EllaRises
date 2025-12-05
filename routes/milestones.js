@@ -39,12 +39,12 @@ router.get("/", async (req, res) => {
         query = query.where(function() {
           this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
             .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
-            .orWhereRaw("LOWER(milestones.milestone_type) LIKE LOWER(?)", [searchPattern]);
+            .orWhereRaw("LOWER(milestones.milestone_title) LIKE LOWER(?)", [searchPattern]);
         });
         countQuery = countQuery.where(function() {
           this.whereRaw("LOWER(participants.participant_first_name) LIKE LOWER(?)", [searchPattern])
             .orWhereRaw("LOWER(participants.participant_last_name) LIKE LOWER(?)", [searchPattern])
-            .orWhereRaw("LOWER(milestones.milestone_type) LIKE LOWER(?)", [searchPattern]);
+            .orWhereRaw("LOWER(milestones.milestone_title) LIKE LOWER(?)", [searchPattern]);
         });
       }
 

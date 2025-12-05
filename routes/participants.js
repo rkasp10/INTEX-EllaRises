@@ -114,7 +114,7 @@ router.post("/add", async (req, res) => {
     res.redirect("/participants");
   } catch (err) {
     console.error(err);
-    res.send("Error adding participant");
+    res.send("Error adding participant: " + err.message);
   }
 });
 

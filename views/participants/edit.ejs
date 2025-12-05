@@ -11,11 +11,11 @@
 
     <main class="page-container">
         <div class="form-page-wrapper">
-            <div class="page-header">
-                <h1>Edit Participant</h1>
-            </div>
+        <div class="page-header">
+            <h1>Edit Participant</h1>
+        </div>
 
-            <div class="form-card">
+        <div class="form-card">
                 <form action="/participants/edit/<%= participant.participant_id %>" method="POST" class="crud-form">
                 <div class="form-row">
                     <div class="form-group">
@@ -51,7 +51,60 @@
                     </div>
                     <div class="form-group">
                         <label for="participant_state">State</label>
-                        <input type="text" id="participant_state" name="participant_state" value="<%= participant.participant_state || '' %>">
+                        <select id="participant_state" name="participant_state">
+                            <option value="">Select State</option>
+                            <option value="AL" <%= participant.participant_state === 'AL' ? 'selected' : '' %>>Alabama</option>
+                            <option value="AK" <%= participant.participant_state === 'AK' ? 'selected' : '' %>>Alaska</option>
+                            <option value="AZ" <%= participant.participant_state === 'AZ' ? 'selected' : '' %>>Arizona</option>
+                            <option value="AR" <%= participant.participant_state === 'AR' ? 'selected' : '' %>>Arkansas</option>
+                            <option value="CA" <%= participant.participant_state === 'CA' ? 'selected' : '' %>>California</option>
+                            <option value="CO" <%= participant.participant_state === 'CO' ? 'selected' : '' %>>Colorado</option>
+                            <option value="CT" <%= participant.participant_state === 'CT' ? 'selected' : '' %>>Connecticut</option>
+                            <option value="DE" <%= participant.participant_state === 'DE' ? 'selected' : '' %>>Delaware</option>
+                            <option value="FL" <%= participant.participant_state === 'FL' ? 'selected' : '' %>>Florida</option>
+                            <option value="GA" <%= participant.participant_state === 'GA' ? 'selected' : '' %>>Georgia</option>
+                            <option value="HI" <%= participant.participant_state === 'HI' ? 'selected' : '' %>>Hawaii</option>
+                            <option value="ID" <%= participant.participant_state === 'ID' ? 'selected' : '' %>>Idaho</option>
+                            <option value="IL" <%= participant.participant_state === 'IL' ? 'selected' : '' %>>Illinois</option>
+                            <option value="IN" <%= participant.participant_state === 'IN' ? 'selected' : '' %>>Indiana</option>
+                            <option value="IA" <%= participant.participant_state === 'IA' ? 'selected' : '' %>>Iowa</option>
+                            <option value="KS" <%= participant.participant_state === 'KS' ? 'selected' : '' %>>Kansas</option>
+                            <option value="KY" <%= participant.participant_state === 'KY' ? 'selected' : '' %>>Kentucky</option>
+                            <option value="LA" <%= participant.participant_state === 'LA' ? 'selected' : '' %>>Louisiana</option>
+                            <option value="ME" <%= participant.participant_state === 'ME' ? 'selected' : '' %>>Maine</option>
+                            <option value="MD" <%= participant.participant_state === 'MD' ? 'selected' : '' %>>Maryland</option>
+                            <option value="MA" <%= participant.participant_state === 'MA' ? 'selected' : '' %>>Massachusetts</option>
+                            <option value="MI" <%= participant.participant_state === 'MI' ? 'selected' : '' %>>Michigan</option>
+                            <option value="MN" <%= participant.participant_state === 'MN' ? 'selected' : '' %>>Minnesota</option>
+                            <option value="MS" <%= participant.participant_state === 'MS' ? 'selected' : '' %>>Mississippi</option>
+                            <option value="MO" <%= participant.participant_state === 'MO' ? 'selected' : '' %>>Missouri</option>
+                            <option value="MT" <%= participant.participant_state === 'MT' ? 'selected' : '' %>>Montana</option>
+                            <option value="NE" <%= participant.participant_state === 'NE' ? 'selected' : '' %>>Nebraska</option>
+                            <option value="NV" <%= participant.participant_state === 'NV' ? 'selected' : '' %>>Nevada</option>
+                            <option value="NH" <%= participant.participant_state === 'NH' ? 'selected' : '' %>>New Hampshire</option>
+                            <option value="NJ" <%= participant.participant_state === 'NJ' ? 'selected' : '' %>>New Jersey</option>
+                            <option value="NM" <%= participant.participant_state === 'NM' ? 'selected' : '' %>>New Mexico</option>
+                            <option value="NY" <%= participant.participant_state === 'NY' ? 'selected' : '' %>>New York</option>
+                            <option value="NC" <%= participant.participant_state === 'NC' ? 'selected' : '' %>>North Carolina</option>
+                            <option value="ND" <%= participant.participant_state === 'ND' ? 'selected' : '' %>>North Dakota</option>
+                            <option value="OH" <%= participant.participant_state === 'OH' ? 'selected' : '' %>>Ohio</option>
+                            <option value="OK" <%= participant.participant_state === 'OK' ? 'selected' : '' %>>Oklahoma</option>
+                            <option value="OR" <%= participant.participant_state === 'OR' ? 'selected' : '' %>>Oregon</option>
+                            <option value="PA" <%= participant.participant_state === 'PA' ? 'selected' : '' %>>Pennsylvania</option>
+                            <option value="RI" <%= participant.participant_state === 'RI' ? 'selected' : '' %>>Rhode Island</option>
+                            <option value="SC" <%= participant.participant_state === 'SC' ? 'selected' : '' %>>South Carolina</option>
+                            <option value="SD" <%= participant.participant_state === 'SD' ? 'selected' : '' %>>South Dakota</option>
+                            <option value="TN" <%= participant.participant_state === 'TN' ? 'selected' : '' %>>Tennessee</option>
+                            <option value="TX" <%= participant.participant_state === 'TX' ? 'selected' : '' %>>Texas</option>
+                            <option value="UT" <%= participant.participant_state === 'UT' ? 'selected' : '' %>>Utah</option>
+                            <option value="VT" <%= participant.participant_state === 'VT' ? 'selected' : '' %>>Vermont</option>
+                            <option value="VA" <%= participant.participant_state === 'VA' ? 'selected' : '' %>>Virginia</option>
+                            <option value="WA" <%= participant.participant_state === 'WA' ? 'selected' : '' %>>Washington</option>
+                            <option value="WV" <%= participant.participant_state === 'WV' ? 'selected' : '' %>>West Virginia</option>
+                            <option value="WI" <%= participant.participant_state === 'WI' ? 'selected' : '' %>>Wisconsin</option>
+                            <option value="WY" <%= participant.participant_state === 'WY' ? 'selected' : '' %>>Wyoming</option>
+                            <option value="DC" <%= participant.participant_state === 'DC' ? 'selected' : '' %>>District of Columbia</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="participant_zip">Zip</label>
