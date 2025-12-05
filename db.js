@@ -13,7 +13,7 @@ const db = knex({
     password: process.env.RDS_PASSWORD || process.env.DB_PASSWORD,
     database: process.env.RDS_DB_NAME || process.env.DB_NAME,
     port: process.env.RDS_PORT || 5432,
-    ssl: { rejectUnauthorized: false },
+    ssl: process.env.RDS_SSL ? { rejectUnauthorized: false } : false,
   },
   pool: {
     min: 2,
