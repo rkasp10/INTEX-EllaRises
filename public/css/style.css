@@ -42,21 +42,20 @@ body {
     NAVBAR (Authenticated)
 ----------------------------------------------------- */
 .navbar {
-  background-color: var(--pink-light);
+  background-color: white;
   padding: 0 40px;
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid var(--pink-mid);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-/* Navbar on landing page - cream background, no border */
+/* Navbar on landing page - no border */
 .landing-body .navbar {
-  background-color: var(--cream);
   border-bottom: none;
 }
 
@@ -110,6 +109,20 @@ body {
 .navbar .nav-user {
   font-size: 0.9rem;
   color: var(--gray-dark);
+  font-weight: 500;
+}
+
+.navbar .nav-role-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.navbar .nav-role-badge.manager {
+  background-color: var(--pink-light);
+  color: var(--green-dark);
 }
 
 .navbar .nav-login-btn {
@@ -127,10 +140,10 @@ body {
 }
 
 .navbar .nav-logout-btn {
-  background-color: var(--rose);
+  background-color: var(--pink-light);
   padding: 8px 18px;
-  border-radius: 20px;
-  color: white;
+  border-radius: 8px;
+  color: var(--green-dark);
   border: none;
   font-weight: 600;
   cursor: pointer;
@@ -139,7 +152,8 @@ body {
 }
 
 .navbar .nav-logout-btn:hover {
-  background-color: #a01c40;
+  background-color: var(--rose);
+  color: white;
 }
 
 /* -----------------------------------------------------
@@ -558,9 +572,9 @@ input[type="submit"]:hover {
   margin: 0;
 }
 
-/* Landing Footer - subtle, light */
+/* Landing Footer */
 .landing-footer {
-  background-color: var(--sage);
+  background-color: var(--green-dark);
   color: white;
   text-align: center;
   padding: 25px 20px;
@@ -736,8 +750,8 @@ input[type="submit"]:hover {
 
 /* Dashboard Header */
 .dashboard-header {
-  background-color: var(--pink-light);
-  border-bottom: 2px solid var(--pink-mid);
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .dashboard-header-inner {
@@ -779,16 +793,16 @@ input[type="submit"]:hover {
 .role-badge-header {
   display: inline-block;
   padding: 5px 12px;
-  border-radius: 15px;
-  font-size: 0.7rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .role-badge-header.manager {
-  background-color: var(--purple);
-  color: white;
+  background-color: var(--pink-light);
+  color: var(--green-dark);
 }
 
 .role-badge-header.member {
@@ -797,12 +811,12 @@ input[type="submit"]:hover {
 }
 
 .dashboard-logout-btn {
-  background-color: transparent;
-  color: var(--gray-dark);
-  border: 1px solid #ddd;
-  padding: 8px 16px;
+  background-color: var(--pink-light);
+  color: var(--green-dark);
+  border: none;
+  padding: 8px 18px;
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9rem;
   font-family: var(--font-body);
   cursor: pointer;
@@ -812,7 +826,6 @@ input[type="submit"]:hover {
 .dashboard-logout-btn:hover {
   background-color: var(--rose);
   color: white;
-  border-color: var(--rose);
 }
 
 .dashboard-logout-btn i {
@@ -2157,7 +2170,7 @@ input[type="submit"]:hover {
 ----------------------------------------------------- */
 /* Site Footer */
 .site-footer {
-  background-color: var(--sage);
+  background-color: var(--green-dark);
   color: white;
   text-align: center;
   padding: 25px 20px;
