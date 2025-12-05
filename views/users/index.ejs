@@ -18,15 +18,34 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="search-bar">
+        <form class="search-bar" method="GET" action="/users" id="searchForm">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="Search by username, name, or email..." onkeyup="filterTable()">
-            <span class="search-count"><span id="visibleCount"><%= users.length %></span> of <%= totalItems %> users</span>
-        </div>
+            <input type="text" name="search" id="searchInput" placeholder="Search by username, name, or email..." value="<%= typeof search !== 'undefined' ? search : '' %>" <%= (typeof search !== 'undefined' && search) ? 'autofocus' : '' %>>
+            <% if (typeof search !== 'undefined' && search) { %>
+                <a href="/users" class="search-clear">Clear</a>
+            <% } %>
+            <span class="search-count"><%= totalItems %> users<%= (typeof search !== 'undefined' && search) ? ' found' : '' %></span>
+        </form>
+        <script>
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 400);
+            });
+            if (searchInput.value) {
+                searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+            }
+        </script>
 
         <% if (users.length === 0) { %>
             <div class="empty-state">
-                <p>No users found.</p>
+                <p>No users found<%= (typeof search !== 'undefined' && search) ? ' matching "' + search + '"' : '' %>.</p>
+                <% if (typeof search !== 'undefined' && search) { %>
+                    <p><a href="/users">Clear search</a></p>
+                <% } %>
             </div>
         <% } else { %>
             <div class="table-wrapper">
@@ -65,15 +84,19 @@
 
             <!-- Pagination -->
             <% if (totalPages > 1) { %>
+                <%
+                    let queryParams = '';
+                    if (typeof search !== 'undefined' && search) queryParams += `search=${encodeURIComponent(search)}&`;
+                %>
                 <div class="pagination">
                     <% if (currentPage > 1) { %>
-                        <a href="/users?page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+                        <a href="/users?<%= queryParams %>page=<%= currentPage - 1 %>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
                     <% } %>
                     
                     <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
                     
                     <% if (currentPage < totalPages) { %>
-                        <a href="/users?page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+                        <a href="/users?<%= queryParams %>page=<%= currentPage + 1 %>" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
                     <% } %>
                 </div>
             <% } %>
@@ -81,36 +104,5 @@
     </main>
 
     <%- include('../partials/footer') %>
-
-    <script>
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('usersTable');
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            let visibleCount = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let found = false;
-                
-                // Search in username, participant name, and email columns (0, 1, 2)
-                for (let j of [0, 1, 2]) {
-                    if (cells[j]) {
-                        const text = cells[j].textContent || cells[j].innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                
-                rows[i].style.display = found ? '' : 'none';
-                if (found) visibleCount++;
-            }
-
-            document.getElementById('visibleCount').textContent = visibleCount;
-        }
-    </script>
 </body>
 </html>

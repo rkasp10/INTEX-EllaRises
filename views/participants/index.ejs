@@ -20,7 +20,7 @@
         <!-- Search Bar -->
         <form class="search-bar" method="GET" action="/participants" id="searchForm">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" name="search" id="searchInput" placeholder="Search by name, email, or city..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+            <input type="text" name="search" id="searchInput" placeholder="Search by name, email, or city..." value="<%= typeof search !== 'undefined' ? search : '' %>" <%= (typeof search !== 'undefined' && search) ? 'autofocus' : '' %>>
             <% if (typeof search !== 'undefined' && search) { %>
                 <a href="/participants" class="search-clear">Clear</a>
             <% } %>
@@ -28,12 +28,17 @@
         </form>
         <script>
             let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     document.getElementById('searchForm').submit();
                 }, 400);
             });
+            // Keep cursor at end of input after autofocus
+            if (searchInput.value) {
+                searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+            }
         </script>
 
         <% if (participants.length === 0) { %>
